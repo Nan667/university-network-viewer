@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Leeds Beckett University", "label": "Leeds Beckett University", "shape": "dot", "size": 85, "title": "Leeds Beckett University (University)", "type": "university"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Yorkshire County Cricket Club", "label": "Yorkshire County Cricket Club", "shape": "triangle", "size": 17, "title": "Yorkshire County Cricket Club (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "Royal Armouries", "label": "Royal Armouries", "shape": "triangle", "size": 17, "title": "Royal Armouries (External Entity: Media, Culture, and Art)", "type": "external_entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "West Yorkshire Playhouse", "label": "West Yorkshire Playhouse", "shape": "triangle", "size": 17, "title": "West Yorkshire Playhouse (External Entity: Media, Culture, and Art)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Greystar Real Estate Partners", "label": "Greystar Real Estate Partners", "shape": "triangle", "size": 17, "title": "Greystar Real Estate Partners (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Local Education Authority", "label": "Local Education Authority", "shape": "triangle", "size": 17, "title": "Local Education Authority (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Opal 3 (shared with University of Leeds)", "label": "Opal 3 (shared with University of Leeds)", "shape": "triangle", "size": 17, "title": "Opal 3 (shared with University of Leeds) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Quality Assurance Agency", "label": "Quality Assurance Agency", "shape": "triangle", "size": 17, "title": "Quality Assurance Agency (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Leeds Beckett Students\u0027 Union", "label": "Leeds Beckett Students\u0027 Union", "shape": "triangle", "size": 17, "title": "Leeds Beckett Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Athletic Union", "label": "Athletic Union", "shape": "triangle", "size": 17, "title": "Athletic Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Leeds Rugby", "label": "Leeds Rugby", "shape": "triangle", "size": 17, "title": "Leeds Rugby (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Challenge Cup", "label": "Challenge Cup", "shape": "triangle", "size": 17, "title": "Challenge Cup (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Carnegie School of Physical Education", "label": "Carnegie School of Physical Education", "shape": "triangle", "size": 17, "title": "Carnegie School of Physical Education (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#FFB347", "id": "Media, Culture, and Art", "label": "Media, Culture, and Art", "shape": "box", "size": 17, "title": "Media, Culture, and Art (Category)", "type": "category"}, {"color": "#AFEEEE", "id": "Infrastructure and Transportation Logistics Enterprises", "label": "Infrastructure and Transportation Logistics Enterprises", "shape": "box", "size": 17, "title": "Infrastructure and Transportation Logistics Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "Art, Architecture and Design", "label": "Art, Architecture and Design", "shape": "star", "size": 17, "title": "Art, Architecture and Design (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Built Environment, Engineering \u0026 Computing", "label": "Built Environment, Engineering \u0026 Computing", "shape": "star", "size": 17, "title": "Built Environment, Engineering \u0026 Computing (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Business", "label": "Business", "shape": "star", "size": 17, "title": "Business (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Clinical \u0026 Applied Sciences", "label": "Clinical \u0026 Applied Sciences", "shape": "star", "size": 17, "title": "Clinical \u0026 Applied Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Cultural studies and humanities", "label": "Cultural studies and humanities", "shape": "star", "size": 17, "title": "Cultural studies and humanities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Education", "label": "Education", "shape": "star", "size": 17, "title": "Education (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Events, Tourism \u0026 Hospitality management", "label": "Events, Tourism \u0026 Hospitality management", "shape": "star", "size": 17, "title": "Events, Tourism \u0026 Hospitality management (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Film, music \u0026 performing arts", "label": "Film, music \u0026 performing arts", "shape": "star", "size": 17, "title": "Film, music \u0026 performing arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Health \u0026 community studies", "label": "Health \u0026 community studies", "shape": "star", "size": 17, "title": "Health \u0026 community studies (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Law", "label": "Law", "shape": "star", "size": 17, "title": "Law (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Languages", "label": "Department of Languages", "shape": "star", "size": 17, "title": "Department of Languages (Internal Unit: Department)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Social Sciences", "label": "Social Sciences", "shape": "star", "size": 17, "title": "Social Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Sport", "label": "Sport", "shape": "star", "size": 17, "title": "Sport (Internal Unit: School)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Leeds Beckett University", "relation": "Collaborations", "title": "Collaborations", "to": "Yorkshire County Cricket Club", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Leeds Beckett University", "relation": "Collaborations", "title": "Collaborations", "to": "Royal Armouries", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Leeds Beckett University", "relation": "Collaborations", "title": "Collaborations", "to": "West Yorkshire Playhouse", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Leeds Beckett University", "relation": "Companies", "title": "Companies", "to": "Greystar Real Estate Partners", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Leeds Beckett University", "relation": "Governments", "title": "Governments", "to": "Local Education Authority", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Leeds Beckett University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Opal 3 (shared with University of Leeds)", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Leeds Beckett University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Quality Assurance Agency", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Leeds Beckett University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Leeds Beckett Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Leeds Beckett University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Athletic Union", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Leeds Beckett University", "relation": "Affiliations", "title": "Affiliations", "to": "Leeds Rugby", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Leeds Beckett University", "relation": "Affiliations", "title": "Affiliations", "to": "Challenge Cup", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Leeds Beckett University", "relation": "Affiliations", "title": "Affiliations", "to": "Carnegie School of Physical Education", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Leeds Beckett University", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Leeds Beckett University", "relation": "category_link", "title": "category_link", "to": "Media, Culture, and Art", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Leeds Beckett University", "relation": "category_link", "title": "category_link", "to": "Infrastructure and Transportation Logistics Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Leeds Beckett University", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Leeds Beckett University", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Art, Architecture and Design", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Built Environment, Engineering \u0026 Computing", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Business", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Clinical \u0026 Applied Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Cultural studies and humanities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Education", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Events, Tourism \u0026 Hospitality management", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Film, music \u0026 performing arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Health \u0026 community studies", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Law", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Leeds Beckett University", "relation": "Department", "title": "Department", "to": "Department of Languages", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Social Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Leeds Beckett University", "relation": "School", "title": "School", "to": "Sport", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

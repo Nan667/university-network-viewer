@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "London Business School", "label": "London Business School", "shape": "dot", "size": 100, "title": "London Business School (University)", "type": "university"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Google", "label": "Google", "shape": "triangle", "size": 17, "title": "Google (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Deloitte", "label": "Deloitte", "shape": "triangle", "size": 17, "title": "Deloitte (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "CNN", "label": "CNN", "shape": "triangle", "size": 17, "title": "CNN (External Entity: Media, Culture, and Art)", "type": "external_entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Accenture", "label": "Accenture", "shape": "triangle", "size": 17, "title": "Accenture (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "BlackRock", "label": "BlackRock", "shape": "triangle", "size": 17, "title": "BlackRock (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Citadel LLC", "label": "Citadel LLC", "shape": "triangle", "size": 17, "title": "Citadel LLC (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "3i", "label": "3i", "shape": "triangle", "size": 17, "title": "3i (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "G4S", "label": "G4S", "shape": "triangle", "size": 17, "title": "G4S (External Entity: Others)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Old Mutual", "label": "Old Mutual", "shape": "triangle", "size": 17, "title": "Old Mutual (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "O2", "label": "O2", "shape": "triangle", "size": 17, "title": "O2 (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Aditya Birla Group", "label": "Aditya Birla Group", "shape": "triangle", "size": 17, "title": "Aditya Birla Group (External Entity: Others)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Brookstone", "label": "Brookstone", "shape": "triangle", "size": 17, "title": "Brookstone (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "ABN AMRO", "label": "ABN AMRO", "shape": "triangle", "size": 17, "title": "ABN AMRO (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Jaguar Cars", "label": "Jaguar Cars", "shape": "triangle", "size": 17, "title": "Jaguar Cars (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "BAA Limited", "label": "BAA Limited", "shape": "triangle", "size": 17, "title": "BAA Limited (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Severn Trent", "label": "Severn Trent", "shape": "triangle", "size": 17, "title": "Severn Trent (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Carillion", "label": "Carillion", "shape": "triangle", "size": 17, "title": "Carillion (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Marks \u0026 Spencer", "label": "Marks \u0026 Spencer", "shape": "triangle", "size": 17, "title": "Marks \u0026 Spencer (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Shell", "label": "Shell", "shape": "triangle", "size": 17, "title": "Shell (External Entity: Others)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Israel Corporation", "label": "Israel Corporation", "shape": "triangle", "size": 17, "title": "Israel Corporation (External Entity: Others)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Tata Group", "label": "Tata Group", "shape": "triangle", "size": 17, "title": "Tata Group (External Entity: Others)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Ineos", "label": "Ineos", "shape": "triangle", "size": 17, "title": "Ineos (External Entity: Others)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Etihad Airways", "label": "Etihad Airways", "shape": "triangle", "size": 17, "title": "Etihad Airways (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "Lonely Planet", "label": "Lonely Planet", "shape": "triangle", "size": 17, "title": "Lonely Planet (External Entity: Media, Culture, and Art)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Jordanian Armed Forces", "label": "Jordanian Armed Forces", "shape": "triangle", "size": 17, "title": "Jordanian Armed Forces (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Cabinet of Uganda", "label": "Cabinet of Uganda", "shape": "triangle", "size": 17, "title": "Cabinet of Uganda (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "British House of Commons", "label": "British House of Commons", "shape": "triangle", "size": 17, "title": "British House of Commons (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Ministry of the Education (Slovakia)", "label": "Ministry of the Education (Slovakia)", "shape": "triangle", "size": 17, "title": "Ministry of the Education (Slovakia) (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Department for Work and Pensions (UK)", "label": "Department for Work and Pensions (UK)", "shape": "triangle", "size": 17, "title": "Department for Work and Pensions (UK) (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Iceland Ministry of Education, Science, and Culture", "label": "Iceland Ministry of Education, Science, and Culture", "shape": "triangle", "size": 17, "title": "Iceland Ministry of Education, Science, and Culture (External Entity: Governments)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Royal National Lifeboat Institution (RNLI)", "label": "Royal National Lifeboat Institution (RNLI)", "shape": "triangle", "size": 17, "title": "Royal National Lifeboat Institution (RNLI) (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Barchester Healthcare", "label": "Barchester Healthcare", "shape": "triangle", "size": 17, "title": "Barchester Healthcare (External Entity: Medical and Healthcare Institutions)", "type": "external_entity"}, {"color": "#C89CD4", "id": "University of London", "label": "University of London", "shape": "dot", "size": 17, "title": "University of London (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Dubai Campus", "label": "Dubai Campus", "shape": "triangle", "size": 17, "title": "Dubai Campus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "New Economics Foundation", "label": "New Economics Foundation", "shape": "triangle", "size": 17, "title": "New Economics Foundation (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Agastya International Foundation", "label": "Agastya International Foundation", "shape": "triangle", "size": 17, "title": "Agastya International Foundation (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "NSPCC", "label": "NSPCC", "shape": "triangle", "size": 17, "title": "NSPCC (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association to Advance Collegiate Schools of Business|AACSB", "label": "Association to Advance Collegiate Schools of Business|AACSB", "shape": "triangle", "size": 17, "title": "Association to Advance Collegiate Schools of Business|AACSB (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European Quality Improvement System|EQUIS", "label": "European Quality Improvement System|EQUIS", "shape": "triangle", "size": 17, "title": "European Quality Improvement System|EQUIS (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs|AMBA", "label": "Association of MBAs|AMBA", "shape": "triangle", "size": 17, "title": "Association of MBAs|AMBA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Royal College of Obstetricians and Gynaecologists", "label": "Royal College of Obstetricians and Gynaecologists", "shape": "triangle", "size": 17, "title": "Royal College of Obstetricians and Gynaecologists (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Marylebone Town Hall", "label": "Marylebone Town Hall", "shape": "triangle", "size": 17, "title": "Marylebone Town Hall (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#87CEFA", "id": "Information and Communication Enterprises", "label": "Information and Communication Enterprises", "shape": "box", "size": 17, "title": "Information and Communication Enterprises (Category)", "type": "category"}, {"color": "#FFB347", "id": "Media, Culture, and Art", "label": "Media, Culture, and Art", "shape": "box", "size": 17, "title": "Media, Culture, and Art (Category)", "type": "category"}, {"color": "#F4A460", "id": "Financial and Professional Services Enterprises", "label": "Financial and Professional Services Enterprises", "shape": "box", "size": 17, "title": "Financial and Professional Services Enterprises (Category)", "type": "category"}, {"color": "#DA70D6", "id": "Others", "label": "Others", "shape": "box", "size": 17, "title": "Others (Category)", "type": "category"}, {"color": "#FFDAB9", "id": "Campus Life and Food Supply Enterprises", "label": "Campus Life and Food Supply Enterprises", "shape": "box", "size": 17, "title": "Campus Life and Food Supply Enterprises (Category)", "type": "category"}, {"color": "#AFEEEE", "id": "Infrastructure and Transportation Logistics Enterprises", "label": "Infrastructure and Transportation Logistics Enterprises", "shape": "box", "size": 17, "title": "Infrastructure and Transportation Logistics Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#F08080", "id": "Medical and Healthcare Institutions", "label": "Medical and Healthcare Institutions", "shape": "box", "size": 17, "title": "Medical and Healthcare Institutions (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Economic Forecasting", "label": "Centre for Economic Forecasting", "shape": "star", "size": 17, "title": "Centre for Economic Forecasting (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Ghoshal conference", "label": "Ghoshal conference", "shape": "star", "size": 17, "title": "Ghoshal conference (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "London Business School", "relation": "Collaborations", "title": "Collaborations", "to": "Google", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "London Business School", "relation": "Collaborations", "title": "Collaborations", "to": "Deloitte", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "London Business School", "relation": "Collaborations", "title": "Collaborations", "to": "CNN", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "London Business School", "relation": "Collaborations", "title": "Collaborations", "to": "Accenture", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "London Business School", "relation": "Collaborations", "title": "Collaborations", "to": "BlackRock", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Citadel LLC", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "3i", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "G4S", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Old Mutual", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "O2", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Aditya Birla Group", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Brookstone", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "ABN AMRO", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Jaguar Cars", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "BAA Limited", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Severn Trent", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Carillion", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Marks \u0026 Spencer", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Shell", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Israel Corporation", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Tata Group", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Ineos", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Etihad Airways", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "London Business School", "relation": "Companies", "title": "Companies", "to": "Lonely Planet", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "Jordanian Armed Forces", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "Cabinet of Uganda", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "British House of Commons", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "Ministry of the Education (Slovakia)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "Department for Work and Pensions (UK)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "London Business School", "relation": "Governments", "title": "Governments", "to": "Iceland Ministry of Education, Science, and Culture", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "London Business School", "relation": "Service Providers", "title": "Service Providers", "to": "Royal National Lifeboat Institution (RNLI)", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "London Business School", "relation": "Service Providers", "title": "Service Providers", "to": "Barchester Healthcare", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "London Business School", "relation": "Affiliations", "title": "Affiliations", "to": "University of London", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "London Business School", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Dubai Campus", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "London Business School", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "New Economics Foundation", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "London Business School", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Agastya International Foundation", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "London Business School", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "NSPCC", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "London Business School", "relation": "Affiliations", "title": "Affiliations", "to": "Association to Advance Collegiate Schools of Business|AACSB", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "London Business School", "relation": "Affiliations", "title": "Affiliations", "to": "European Quality Improvement System|EQUIS", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "London Business School", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs|AMBA", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "London Business School", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Royal College of Obstetricians and Gynaecologists", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "London Business School", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Marylebone Town Hall", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Information and Communication Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Media, Culture, and Art", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Financial and Professional Services Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Others", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Campus Life and Food Supply Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Infrastructure and Transportation Logistics Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Medical and Healthcare Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "London Business School", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "London Business School", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Economic Forecasting", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "London Business School", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Ghoshal conference", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

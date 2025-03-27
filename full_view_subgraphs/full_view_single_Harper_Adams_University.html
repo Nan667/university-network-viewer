@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Harper Adams University", "label": "Harper Adams University", "shape": "dot", "size": 88, "title": "Harper Adams University (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "JCB Academy", "label": "JCB Academy", "shape": "triangle", "size": 17, "title": "JCB Academy (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Harper and Keele Veterinary School", "label": "Harper and Keele Veterinary School", "shape": "triangle", "size": 17, "title": "Harper and Keele Veterinary School (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#C89CD4", "id": "Keele University", "label": "Keele University", "shape": "dot", "size": 17, "title": "Keele University (University)", "type": "university"}, {"category": "Others", "color": "#DA70D6", "id": "M-Sport World Rally Team", "label": "M-Sport World Rally Team", "shape": "triangle", "size": 17, "title": "M-Sport World Rally Team (External Entity: Others)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "J Sainsbury PLC", "label": "J Sainsbury PLC", "shape": "triangle", "size": 17, "title": "J Sainsbury PLC (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Alamo Group Europe Ltd", "label": "Alamo Group Europe Ltd", "shape": "triangle", "size": 17, "title": "Alamo Group Europe Ltd (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Ministry of Agriculture", "label": "Ministry of Agriculture", "shape": "triangle", "size": 17, "title": "Ministry of Agriculture (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Department of Education and Science", "label": "Department of Education and Science", "shape": "triangle", "size": 17, "title": "Department of Education and Science (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Harper Adams University Boat Club", "label": "Harper Adams University Boat Club", "shape": "triangle", "size": 17, "title": "Harper Adams University Boat Club (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Harper Adams University Clay Shooting Club", "label": "Harper Adams University Clay Shooting Club", "shape": "triangle", "size": 17, "title": "Harper Adams University Clay Shooting Club (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Harper Adams University Motorsport Team", "label": "Harper Adams University Motorsport Team", "shape": "triangle", "size": 17, "title": "Harper Adams University Motorsport Team (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "National Institute of Poultry Husbandry", "label": "National Institute of Poultry Husbandry", "shape": "triangle", "size": 17, "title": "National Institute of Poultry Husbandry (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Crop and Environment Research Centre", "label": "Crop and Environment Research Centre", "shape": "star", "size": 17, "title": "Crop and Environment Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Dairy Crest Innovation Centre", "label": "Dairy Crest Innovation Centre", "shape": "star", "size": 17, "title": "Dairy Crest Innovation Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Poultry Research Unit", "label": "Poultry Research Unit", "shape": "star", "size": 17, "title": "Poultry Research Unit (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Regional Food Academy", "label": "Regional Food Academy", "shape": "star", "size": 17, "title": "Regional Food Academy (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Countryside Alliance", "label": "Countryside Alliance", "shape": "triangle", "size": 17, "title": "Countryside Alliance (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#DA70D6", "id": "Others", "label": "Others", "shape": "box", "size": 17, "title": "Others (Category)", "type": "category"}, {"color": "#FFDAB9", "id": "Campus Life and Food Supply Enterprises", "label": "Campus Life and Food Supply Enterprises", "shape": "box", "size": 17, "title": "Campus Life and Food Supply Enterprises (Category)", "type": "category"}, {"color": "#AFEEEE", "id": "Infrastructure and Transportation Logistics Enterprises", "label": "Infrastructure and Transportation Logistics Enterprises", "shape": "box", "size": 17, "title": "Infrastructure and Transportation Logistics Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#FF9999", "edge_type": "Department", "id": "Agriculture", "label": "Agriculture", "shape": "star", "size": 17, "title": "Agriculture (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Animal Sciences", "label": "Animal Sciences", "shape": "star", "size": 17, "title": "Animal Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Business and Agri-Food", "label": "Business and Agri-Food", "shape": "star", "size": 17, "title": "Business and Agri-Food (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Environment, Sustainability and Wildlife", "label": "Environment, Sustainability and Wildlife", "shape": "star", "size": 17, "title": "Environment, Sustainability and Wildlife (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Engineering", "label": "Engineering", "shape": "star", "size": 17, "title": "Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Food Science, Technology and Innovation", "label": "Food Science, Technology and Innovation", "shape": "star", "size": 17, "title": "Food Science, Technology and Innovation (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Land and Property Management", "label": "Land and Property Management", "shape": "star", "size": 17, "title": "Land and Property Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Veterinary Nursing", "label": "Veterinary Nursing", "shape": "star", "size": 17, "title": "Veterinary Nursing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Veterinary Physiotherapy", "label": "Veterinary Physiotherapy", "shape": "star", "size": 17, "title": "Veterinary Physiotherapy (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Zoology", "label": "Zoology", "shape": "star", "size": 17, "title": "Zoology (Internal Unit: Department)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Harper Adams University", "relation": "Collaborations", "title": "Collaborations", "to": "JCB Academy", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Harper Adams University", "relation": "Collaborations", "title": "Collaborations", "to": "Harper and Keele Veterinary School", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Harper Adams University", "relation": "Collaborations", "title": "Collaborations", "to": "Keele University", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Harper Adams University", "relation": "Companies", "title": "Companies", "to": "M-Sport World Rally Team", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Harper Adams University", "relation": "Companies", "title": "Companies", "to": "J Sainsbury PLC", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Harper Adams University", "relation": "Companies", "title": "Companies", "to": "Alamo Group Europe Ltd", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Harper Adams University", "relation": "Governments", "title": "Governments", "to": "Ministry of Agriculture", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Harper Adams University", "relation": "Governments", "title": "Governments", "to": "Department of Education and Science", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Harper Adams University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Harper Adams University Boat Club", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Harper Adams University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Harper Adams University Clay Shooting Club", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Harper Adams University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Harper Adams University Motorsport Team", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Harper Adams University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "National Institute of Poultry Husbandry", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Harper Adams University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Crop and Environment Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Harper Adams University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Dairy Crest Innovation Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Harper Adams University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Poultry Research Unit", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Harper Adams University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Regional Food Academy", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "Harper Adams University", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Countryside Alliance", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Others", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Campus Life and Food Supply Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Infrastructure and Transportation Logistics Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Harper Adams University", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Agriculture", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Animal Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Business and Agri-Food", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Environment, Sustainability and Wildlife", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Food Science, Technology and Innovation", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Land and Property Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Veterinary Nursing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Veterinary Physiotherapy", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Harper Adams University", "relation": "Department", "title": "Department", "to": "Zoology", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

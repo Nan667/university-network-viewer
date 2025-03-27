@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Lancaster University", "label": "Lancaster University", "shape": "dot", "size": 103, "title": "Lancaster University (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "N8 Group", "label": "N8 Group", "shape": "triangle", "size": 17, "title": "N8 Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Durham", "label": "University of Durham", "shape": "triangle", "size": 17, "title": "University of Durham (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#C89CD4", "id": "University of Leeds", "label": "University of Leeds", "shape": "dot", "size": 17, "title": "University of Leeds (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Liverpool", "label": "University of Liverpool", "shape": "dot", "size": 17, "title": "University of Liverpool (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Manchester", "label": "University of Manchester", "shape": "dot", "size": 17, "title": "University of Manchester (University)", "type": "university"}, {"color": "#C89CD4", "id": "Newcastle University", "label": "Newcastle University", "shape": "dot", "size": 17, "title": "Newcastle University (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Sheffield", "label": "University of Sheffield", "shape": "dot", "size": 17, "title": "University of Sheffield (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of York", "label": "University of York", "shape": "dot", "size": 17, "title": "University of York (University)", "type": "university"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "BAE Systems", "label": "BAE Systems", "shape": "triangle", "size": 17, "title": "BAE Systems (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Navitas Limited", "label": "Navitas Limited", "shape": "triangle", "size": 17, "title": "Navitas Limited (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Chinese Ministry of Education", "label": "Chinese Ministry of Education", "shape": "triangle", "size": 17, "title": "Chinese Ministry of Education (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "CERN", "label": "CERN", "shape": "triangle", "size": 17, "title": "CERN (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Fermilab", "label": "Fermilab", "shape": "triangle", "size": 17, "title": "Fermilab (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "KEK", "label": "KEK", "shape": "triangle", "size": 17, "title": "KEK (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "SNOLAB", "label": "SNOLAB", "shape": "triangle", "size": 17, "title": "SNOLAB (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Lancaster University Students\u0027 Union", "label": "Lancaster University Students\u0027 Union", "shape": "triangle", "size": 17, "title": "Lancaster University Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Vegan school meal#Plant-Based Universities campaign", "label": "Vegan school meal#Plant-Based Universities campaign", "shape": "triangle", "size": 17, "title": "Vegan school meal#Plant-Based Universities campaign (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Lancaster University Ghana", "label": "Lancaster University Ghana", "shape": "triangle", "size": 17, "title": "Lancaster University Ghana (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association to Advance Collegiate Schools of Business|AACSB", "label": "Association to Advance Collegiate Schools of Business|AACSB", "shape": "triangle", "size": 17, "title": "Association to Advance Collegiate Schools of Business|AACSB (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs|AMBA", "label": "Association of MBAs|AMBA", "shape": "triangle", "size": 17, "title": "Association of MBAs|AMBA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European Quality Improvement System|EQUIS", "label": "European Quality Improvement System|EQUIS", "shape": "triangle", "size": 17, "title": "European Quality Improvement System|EQUIS (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "City of Lancaster", "label": "City of Lancaster", "shape": "triangle", "size": 17, "title": "City of Lancaster (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts and Social Sciences", "label": "Faculty of Arts and Social Sciences", "shape": "star", "size": 17, "title": "Faculty of Arts and Social Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Health and Medicine", "label": "Faculty of Health and Medicine", "shape": "star", "size": 17, "title": "Faculty of Health and Medicine (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science and Technology", "label": "Faculty of Science and Technology", "shape": "star", "size": 17, "title": "Faculty of Science and Technology (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Lancaster University Management School", "label": "Lancaster University Management School", "shape": "star", "size": 17, "title": "Lancaster University Management School (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Global Affairs", "label": "School of Global Affairs", "shape": "star", "size": 17, "title": "School of Global Affairs (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing and Communications", "label": "School of Computing and Communications", "shape": "star", "size": 17, "title": "School of Computing and Communications (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Educational Research", "label": "Department of Educational Research", "shape": "star", "size": 17, "title": "Department of Educational Research (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of English Literature and Creative Writing", "label": "Department of English Literature and Creative Writing", "shape": "star", "size": 17, "title": "Department of English Literature and Creative Writing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of History", "label": "Department of History", "shape": "star", "size": 17, "title": "Department of History (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Lancaster Institute for the Contemporary Arts", "label": "Lancaster Institute for the Contemporary Arts", "shape": "star", "size": 17, "title": "Lancaster Institute for the Contemporary Arts (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Linguistics and English Language", "label": "Department of Linguistics and English Language", "shape": "star", "size": 17, "title": "Department of Linguistics and English Language (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Politics, Philosophy and Religion", "label": "Department of Politics, Philosophy and Religion", "shape": "star", "size": 17, "title": "Department of Politics, Philosophy and Religion (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Sociology", "label": "Department of Sociology", "shape": "star", "size": 17, "title": "Department of Sociology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Division of Biomedical and Life Sciences", "label": "Division of Biomedical and Life Sciences", "shape": "star", "size": 17, "title": "Division of Biomedical and Life Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Division of Health Research", "label": "Division of Health Research", "shape": "star", "size": 17, "title": "Division of Health Research (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Lancaster Medical School", "label": "Lancaster Medical School", "shape": "star", "size": 17, "title": "Lancaster Medical School (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Chemistry", "label": "Department of Chemistry", "shape": "star", "size": 17, "title": "Department of Chemistry (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Engineering", "label": "Department of Engineering", "shape": "star", "size": 17, "title": "Department of Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Lancaster Environment Centre", "label": "Lancaster Environment Centre", "shape": "star", "size": 17, "title": "Lancaster Environment Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Mathematics and Statistics", "label": "Department of Mathematics and Statistics", "shape": "star", "size": 17, "title": "Department of Mathematics and Statistics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Natural Sciences", "label": "Natural Sciences", "shape": "star", "size": 17, "title": "Natural Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Physics", "label": "Department of Physics", "shape": "star", "size": 17, "title": "Department of Physics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology", "label": "Department of Psychology", "shape": "star", "size": 17, "title": "Department of Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Accounting and Finance", "label": "Accounting and Finance", "shape": "star", "size": 17, "title": "Accounting and Finance (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Education, Training and Development", "label": "Centre for Education, Training and Development", "shape": "star", "size": 17, "title": "Centre for Education, Training and Development (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Economics", "label": "Department of Economics", "shape": "star", "size": 17, "title": "Department of Economics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Entrepreneurship, Strategy and Innovation", "label": "Department of Entrepreneurship, Strategy and Innovation", "shape": "star", "size": 17, "title": "Department of Entrepreneurship, Strategy and Innovation (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Leadership and Management", "label": "Department of Leadership and Management", "shape": "star", "size": 17, "title": "Department of Leadership and Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Management Science", "label": "Department of Management Science", "shape": "star", "size": 17, "title": "Department of Management Science (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Marketing", "label": "Department of Marketing", "shape": "star", "size": 17, "title": "Department of Marketing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Organisation, Work and Technology", "label": "Department of Organisation, Work and Technology", "shape": "star", "size": 17, "title": "Department of Organisation, Work and Technology (Internal Unit: Department)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "N8 Group", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Durham", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Leeds", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Liverpool", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Manchester", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "Newcastle University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Sheffield", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Lancaster University", "relation": "Collaborations", "title": "Collaborations", "to": "University of York", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Lancaster University", "relation": "Companies", "title": "Companies", "to": "BAE Systems", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Lancaster University", "relation": "Companies", "title": "Companies", "to": "Navitas Limited", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Lancaster University", "relation": "Governments", "title": "Governments", "to": "Chinese Ministry of Education", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Lancaster University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "CERN", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Lancaster University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Fermilab", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Lancaster University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "KEK", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Lancaster University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "SNOLAB", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Lancaster University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Lancaster University Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Lancaster University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Vegan school meal#Plant-Based Universities campaign", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Lancaster University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Lancaster University Ghana", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "Association to Advance Collegiate Schools of Business|AACSB", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs|AMBA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "European Quality Improvement System|EQUIS", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Lancaster University", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Lancaster University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "City of Lancaster", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Lancaster University", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Lancaster University", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Lancaster University", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Lancaster University", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Lancaster University", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Lancaster University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts and Social Sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Lancaster University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Health and Medicine", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Lancaster University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science and Technology", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Lancaster University", "relation": "Faculty", "title": "Faculty", "to": "Lancaster University Management School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Lancaster University", "relation": "School", "title": "School", "to": "School of Global Affairs", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Lancaster University", "relation": "School", "title": "School", "to": "School of Computing and Communications", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Educational Research", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of English Literature and Creative Writing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of History", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Lancaster University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Lancaster Institute for the Contemporary Arts", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Linguistics and English Language", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Politics, Philosophy and Religion", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Sociology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Division of Biomedical and Life Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Division of Health Research", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Lancaster Medical School", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Chemistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Engineering", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Lancaster University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Lancaster Environment Centre", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Mathematics and Statistics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Natural Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Physics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Accounting and Finance", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Lancaster University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Education, Training and Development", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Economics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Entrepreneurship, Strategy and Innovation", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Leadership and Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Management Science", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Marketing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Lancaster University", "relation": "Department", "title": "Department", "to": "Department of Organisation, Work and Technology", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

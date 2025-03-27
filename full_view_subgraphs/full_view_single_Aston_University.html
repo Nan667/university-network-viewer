@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Aston University", "label": "Aston University", "shape": "dot", "size": 96, "title": "Aston University (University)", "type": "university"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Capgemini", "label": "Capgemini", "shape": "triangle", "size": 17, "title": "Capgemini (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Lloyds Bank", "label": "Lloyds Bank", "shape": "triangle", "size": 17, "title": "Lloyds Bank (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "J.P. Morgan", "label": "J.P. Morgan", "shape": "triangle", "size": 17, "title": "J.P. Morgan (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Gymshark", "label": "Gymshark", "shape": "triangle", "size": 17, "title": "Gymshark (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Berkeley Group Holdings", "label": "Berkeley Group Holdings", "shape": "triangle", "size": 17, "title": "Berkeley Group Holdings (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Jaguar Land Rover", "label": "Jaguar Land Rover", "shape": "triangle", "size": 17, "title": "Jaguar Land Rover (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "BP Group", "label": "BP Group", "shape": "triangle", "size": 17, "title": "BP Group (External Entity: Others)", "type": "external_entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "TATA Motors", "label": "TATA Motors", "shape": "triangle", "size": 17, "title": "TATA Motors (External Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "external_entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Imperial Chemical Industries", "label": "Imperial Chemical Industries", "shape": "triangle", "size": 17, "title": "Imperial Chemical Industries (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "State Minister for Energy in Uganda", "label": "State Minister for Energy in Uganda", "shape": "triangle", "size": 17, "title": "State Minister for Energy in Uganda (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Menteri Besar of Perak", "label": "Menteri Besar of Perak", "shape": "triangle", "size": 17, "title": "Menteri Besar of Perak (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Aston Science Park", "label": "Aston Science Park", "shape": "triangle", "size": 17, "title": "Aston Science Park (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ACALM", "label": "ACALM", "shape": "triangle", "size": 17, "title": "ACALM (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Aston Students\u0027 Union", "label": "Aston Students\u0027 Union", "shape": "triangle", "size": 17, "title": "Aston Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "National Union of Students (United Kingdom)", "label": "National Union of Students (United Kingdom)", "shape": "triangle", "size": 17, "title": "National Union of Students (United Kingdom) (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "EQUIS", "label": "EQUIS", "shape": "triangle", "size": 17, "title": "EQUIS (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "AACSB", "label": "AACSB", "shape": "triangle", "size": 17, "title": "AACSB (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "M5 (universities)|M5 Universities", "label": "M5 (universities)|M5 Universities", "shape": "triangle", "size": 17, "title": "M5 (universities)|M5 Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs|AMBA", "label": "Association of MBAs|AMBA", "shape": "triangle", "size": 17, "title": "Association of MBAs|AMBA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#87CEFA", "id": "Information and Communication Enterprises", "label": "Information and Communication Enterprises", "shape": "box", "size": 17, "title": "Information and Communication Enterprises (Category)", "type": "category"}, {"color": "#F4A460", "id": "Financial and Professional Services Enterprises", "label": "Financial and Professional Services Enterprises", "shape": "box", "size": 17, "title": "Financial and Professional Services Enterprises (Category)", "type": "category"}, {"color": "#FFDAB9", "id": "Campus Life and Food Supply Enterprises", "label": "Campus Life and Food Supply Enterprises", "shape": "box", "size": 17, "title": "Campus Life and Food Supply Enterprises (Category)", "type": "category"}, {"color": "#AFEEEE", "id": "Infrastructure and Transportation Logistics Enterprises", "label": "Infrastructure and Transportation Logistics Enterprises", "shape": "box", "size": 17, "title": "Infrastructure and Transportation Logistics Enterprises (Category)", "type": "category"}, {"color": "#DA70D6", "id": "Others", "label": "Others", "shape": "box", "size": 17, "title": "Others (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "Aston Business School", "label": "Aston Business School", "shape": "star", "size": 17, "title": "Aston Business School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Aston Law School", "label": "Aston Law School", "shape": "star", "size": 17, "title": "Aston Law School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Social Sciences and Humanities", "label": "School of Social Sciences and Humanities", "shape": "star", "size": 17, "title": "School of Social Sciences and Humanities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computer Science and Digital Technologies", "label": "School of Computer Science and Digital Technologies", "shape": "star", "size": 17, "title": "School of Computer Science and Digital Technologies (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Engineering and Technology", "label": "School of Engineering and Technology", "shape": "star", "size": 17, "title": "School of Engineering and Technology (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Infrastructure and Sustainable Engineering", "label": "School of Infrastructure and Sustainable Engineering", "shape": "star", "size": 17, "title": "School of Infrastructure and Sustainable Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Biosciences", "label": "School of Biosciences", "shape": "star", "size": 17, "title": "School of Biosciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Aston Medical School", "label": "Aston Medical School", "shape": "star", "size": 17, "title": "Aston Medical School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Optometry", "label": "School of Optometry", "shape": "star", "size": 17, "title": "School of Optometry (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Aston Pharmacy School", "label": "Aston Pharmacy School", "shape": "star", "size": 17, "title": "Aston Pharmacy School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Psychology", "label": "School of Psychology", "shape": "star", "size": 17, "title": "School of Psychology (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Aston Foundation Centre", "label": "Aston Foundation Centre", "shape": "star", "size": 17, "title": "Aston Foundation Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Aston Professional Engineering Centre", "label": "Aston Professional Engineering Centre", "shape": "star", "size": 17, "title": "Aston Professional Engineering Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Aston Institute of Photonic Technologies", "label": "Aston Institute of Photonic Technologies", "shape": "star", "size": 17, "title": "Aston Institute of Photonic Technologies (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Aston University", "relation": "Collaborations", "title": "Collaborations", "to": "Capgemini", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "Lloyds Bank", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "J.P. Morgan", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "Gymshark", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "Berkeley Group Holdings", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "Jaguar Land Rover", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "BP Group", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "TATA Motors", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Aston University", "relation": "Companies", "title": "Companies", "to": "Imperial Chemical Industries", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Aston University", "relation": "Governments", "title": "Governments", "to": "State Minister for Energy in Uganda", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Aston University", "relation": "Governments", "title": "Governments", "to": "Menteri Besar of Perak", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Aston University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Aston Science Park", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Aston University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "ACALM", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Aston University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Aston Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Aston University", "relation": "Student Organizations", "title": "Student Organizations", "to": "National Union of Students (United Kingdom)", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "EQUIS", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "AACSB", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "M5 (universities)|M5 Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Aston University", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs|AMBA", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Information and Communication Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Financial and Professional Services Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Campus Life and Food Supply Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Infrastructure and Transportation Logistics Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Others", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Aston University", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "Aston Business School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "Aston Law School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Social Sciences and Humanities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Computer Science and Digital Technologies", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Engineering and Technology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Infrastructure and Sustainable Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Biosciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "Aston Medical School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Optometry", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "Aston Pharmacy School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Aston University", "relation": "School", "title": "School", "to": "School of Psychology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Aston University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Aston Foundation Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Aston University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Aston Professional Engineering Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Aston University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Aston Institute of Photonic Technologies", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

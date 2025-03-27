@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Goldsmiths, University of London", "label": "Goldsmiths, University of London", "shape": "dot", "size": 91, "title": "Goldsmiths, University of London (University)", "type": "university"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Tungsten Network", "label": "Tungsten Network", "shape": "triangle", "size": 17, "title": "Tungsten Network (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "NatWest", "label": "NatWest", "shape": "triangle", "size": 17, "title": "NatWest (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Lloyds Bank", "label": "Lloyds Bank", "shape": "triangle", "size": 17, "title": "Lloyds Bank (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "KPMG", "label": "KPMG", "shape": "triangle", "size": 17, "title": "KPMG (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "City of London", "label": "City of London", "shape": "triangle", "size": 17, "title": "City of London (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Goldsmiths Students\u0027 Union", "label": "Goldsmiths Students\u0027 Union", "shape": "triangle", "size": 17, "title": "Goldsmiths Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Senate House (University of London)", "label": "Senate House (University of London)", "shape": "triangle", "size": 17, "title": "Senate House (University of London) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Goldsmiths Research Online (GRO)", "label": "Goldsmiths Research Online (GRO)", "shape": "triangle", "size": 17, "title": "Goldsmiths Research Online (GRO) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Tungsten Centre for Intelligent Data Analytics", "label": "Tungsten Centre for Intelligent Data Analytics", "shape": "star", "size": 17, "title": "Tungsten Centre for Intelligent Data Analytics (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#C89CD4", "id": "University of London", "label": "University of London", "shape": "dot", "size": 17, "title": "University of London (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities", "label": "Association of Commonwealth Universities", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Worshipful Company of Goldsmiths", "label": "Worshipful Company of Goldsmiths", "shape": "triangle", "size": 17, "title": "Worshipful Company of Goldsmiths (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#87CEFA", "id": "Information and Communication Enterprises", "label": "Information and Communication Enterprises", "shape": "box", "size": 17, "title": "Information and Communication Enterprises (Category)", "type": "category"}, {"color": "#F4A460", "id": "Financial and Professional Services Enterprises", "label": "Financial and Professional Services Enterprises", "shape": "box", "size": 17, "title": "Financial and Professional Services Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Art", "label": "Department of Art", "shape": "star", "size": 17, "title": "Department of Art (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Design", "label": "Department of Design", "shape": "star", "size": 17, "title": "Department of Design (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Computing", "label": "Department of Computing", "shape": "star", "size": 17, "title": "Department of Computing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Sociology Department", "label": "Sociology Department", "shape": "star", "size": 17, "title": "Sociology Department (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Media and Communications Department", "label": "Media and Communications Department", "shape": "star", "size": 17, "title": "Media and Communications Department (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Centre for Cultural Studies", "label": "Centre for Cultural Studies", "shape": "star", "size": 17, "title": "Centre for Cultural Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Anthropology", "label": "Department of Anthropology", "shape": "star", "size": 17, "title": "Department of Anthropology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "English \u0026 Comparative Literature Department", "label": "English \u0026 Comparative Literature Department", "shape": "star", "size": 17, "title": "English \u0026 Comparative Literature Department (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Music", "label": "Department of Music", "shape": "star", "size": 17, "title": "Department of Music (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Educational Studies", "label": "Department of Educational Studies", "shape": "star", "size": 17, "title": "Department of Educational Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Cognition, Computation and Culture", "label": "Centre for Cognition, Computation and Culture", "shape": "star", "size": 17, "title": "Centre for Cognition, Computation and Culture (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Creative and Cultural Entrepreneurship", "label": "Institute for Creative and Cultural Entrepreneurship", "shape": "star", "size": 17, "title": "Institute for Creative and Cultural Entrepreneurship (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Research Centre for Russian Music", "label": "Research Centre for Russian Music", "shape": "star", "size": 17, "title": "Research Centre for Russian Music (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Unit for Sound Practice Research", "label": "Unit for Sound Practice Research", "shape": "star", "size": 17, "title": "Unit for Sound Practice Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Contemporary Music Research Group", "label": "Contemporary Music Research Group", "shape": "star", "size": 17, "title": "Contemporary Music Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Asian Music Unit", "label": "Asian Music Unit", "shape": "star", "size": 17, "title": "Asian Music Unit (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Afghanistan Music Unit", "label": "Afghanistan Music Unit", "shape": "star", "size": 17, "title": "Afghanistan Music Unit (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Fringe and Underground Music Group", "label": "Fringe and Underground Music Group", "shape": "star", "size": 17, "title": "Fringe and Underground Music Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Music and Ethnographic Film", "label": "Centre for Music and Ethnographic Film", "shape": "star", "size": 17, "title": "Centre for Music and Ethnographic Film (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#EBF279", "from": "Goldsmiths, University of London", "relation": "Companies", "title": "Companies", "to": "Tungsten Network", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Goldsmiths, University of London", "relation": "Companies", "title": "Companies", "to": "NatWest", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Goldsmiths, University of London", "relation": "Companies", "title": "Companies", "to": "Lloyds Bank", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Goldsmiths, University of London", "relation": "Companies", "title": "Companies", "to": "KPMG", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Goldsmiths, University of London", "relation": "Governments", "title": "Governments", "to": "City of London", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Goldsmiths, University of London", "relation": "Student Organizations", "title": "Student Organizations", "to": "Goldsmiths Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Goldsmiths, University of London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Senate House (University of London)", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Goldsmiths, University of London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Goldsmiths Research Online (GRO)", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Tungsten Centre for Intelligent Data Analytics", "width": 1}, {"arrows": "to", "color": "#7987F2", "from": "Goldsmiths, University of London", "relation": "Parent Organizations", "title": "Parent Organizations", "to": "University of London", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Goldsmiths, University of London", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Goldsmiths, University of London", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Goldsmiths, University of London", "relation": "Affiliations", "title": "Affiliations", "to": "Worshipful Company of Goldsmiths", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Information and Communication Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Financial and Professional Services Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Goldsmiths, University of London", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Art", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Design", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Computing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Sociology Department", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Media and Communications Department", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Centre for Cultural Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Anthropology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "English \u0026 Comparative Literature Department", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Music", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Goldsmiths, University of London", "relation": "Department", "title": "Department", "to": "Department of Educational Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Cognition, Computation and Culture", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Creative and Cultural Entrepreneurship", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Research Centre for Russian Music", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Unit for Sound Practice Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Contemporary Music Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Asian Music Unit", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Afghanistan Music Unit", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Fringe and Underground Music Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Goldsmiths, University of London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Music and Ethnographic Film", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

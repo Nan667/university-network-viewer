@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Newcastle University", "label": "Newcastle University", "shape": "dot", "size": 96, "title": "Newcastle University (University)", "type": "university"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "INTO University Partnerships", "label": "INTO University Partnerships", "shape": "triangle", "size": 17, "title": "INTO University Partnerships (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Singapore Institute of Technology", "label": "Singapore Institute of Technology", "shape": "triangle", "size": 17, "title": "Singapore Institute of Technology (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Red Hat", "label": "Red Hat", "shape": "triangle", "size": 17, "title": "Red Hat (External Entity: Information and Communication Enterprises)", "type": "external_entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "PricewaterhouseCoopers", "label": "PricewaterhouseCoopers", "shape": "triangle", "size": 17, "title": "PricewaterhouseCoopers (External Entity: Financial and Professional Services Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "War Office", "label": "War Office", "shape": "triangle", "size": 17, "title": "War Office (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Royal Army Medical Corps", "label": "Royal Army Medical Corps", "shape": "triangle", "size": 17, "title": "Royal Army Medical Corps (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "National Health Service (England)", "label": "National Health Service (England)", "shape": "triangle", "size": 17, "title": "National Health Service (England) (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Newcastle University Students\u0027 Union", "label": "Newcastle University Students\u0027 Union", "shape": "triangle", "size": 17, "title": "Newcastle University Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "North East Routes into Languages Consortium", "label": "North East Routes into Languages Consortium", "shape": "triangle", "size": 17, "title": "North East Routes into Languages Consortium (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Newcastle University Singapore", "label": "Newcastle University Singapore", "shape": "triangle", "size": 17, "title": "Newcastle University Singapore (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Newcastle University Medicine Malaysia", "label": "Newcastle University Medicine Malaysia", "shape": "triangle", "size": 17, "title": "Newcastle University Medicine Malaysia (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "AACSB", "label": "AACSB", "shape": "triangle", "size": 17, "title": "AACSB (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Association of MBAs", "label": "Association of MBAs", "shape": "triangle", "size": 17, "title": "Association of MBAs (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "EQUIS", "label": "EQUIS", "shape": "triangle", "size": 17, "title": "EQUIS (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Royal College of Surgeons of England", "label": "Royal College of Surgeons of England", "shape": "triangle", "size": 17, "title": "Royal College of Surgeons of England (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Institute of Chartered Accountants in England \u0026 Wales", "label": "Institute of Chartered Accountants in England \u0026 Wales", "shape": "triangle", "size": 17, "title": "Institute of Chartered Accountants in England \u0026 Wales (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Newcastle Institute for Social Renewal", "label": "Newcastle Institute for Social Renewal", "shape": "star", "size": 17, "title": "Newcastle Institute for Social Renewal (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Digital Institute", "label": "Digital Institute", "shape": "triangle", "size": 17, "title": "Digital Institute (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Biosciences Institute", "label": "Biosciences Institute", "shape": "triangle", "size": 17, "title": "Biosciences Institute (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Population Health Sciences Institute", "label": "Population Health Sciences Institute", "shape": "triangle", "size": 17, "title": "Population Health Sciences Institute (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Translational and Clinical Research Institute", "label": "Translational and Clinical Research Institute", "shape": "triangle", "size": 17, "title": "Translational and Clinical Research Institute (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Confucius Institute", "label": "Confucius Institute", "shape": "star", "size": 17, "title": "Confucius Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Non governmental/non-profit organizations", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Cam\u00f5es Institute", "label": "Cam\u00f5es Institute", "shape": "star", "size": 17, "title": "Cam\u00f5es Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "N8 Group", "label": "N8 Group", "shape": "triangle", "size": 17, "title": "N8 Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Great North Museum: Hancock", "label": "Great North Museum: Hancock", "shape": "triangle", "size": 17, "title": "Great North Museum: Hancock (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Herschel Building", "label": "Herschel Building", "shape": "triangle", "size": 17, "title": "Herschel Building (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#87CEFA", "id": "Information and Communication Enterprises", "label": "Information and Communication Enterprises", "shape": "box", "size": 17, "title": "Information and Communication Enterprises (Category)", "type": "category"}, {"color": "#F4A460", "id": "Financial and Professional Services Enterprises", "label": "Financial and Professional Services Enterprises", "shape": "box", "size": 17, "title": "Financial and Professional Services Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#E6E6FA", "id": "Internal organization/department of the university", "label": "Internal organization/department of the university", "shape": "box", "size": 17, "title": "Internal organization/department of the university (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "Newcastle University Business School", "label": "Newcastle University Business School", "shape": "star", "size": 17, "title": "Newcastle University Business School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Newcastle Law School", "label": "Newcastle Law School", "shape": "star", "size": 17, "title": "Newcastle Law School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Modern Languages", "label": "School of Modern Languages", "shape": "star", "size": 17, "title": "School of Modern Languages (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Newcastle University Dental School", "label": "Newcastle University Dental School", "shape": "star", "size": 17, "title": "Newcastle University Dental School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Newcastle University Medical School", "label": "Newcastle University Medical School", "shape": "star", "size": 17, "title": "Newcastle University Medical School (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Dove Marine Laboratory", "label": "Dove Marine Laboratory", "shape": "star", "size": 17, "title": "Dove Marine Laboratory (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Newcastle University", "relation": "Collaborations", "title": "Collaborations", "to": "INTO University Partnerships", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Newcastle University", "relation": "Collaborations", "title": "Collaborations", "to": "Singapore Institute of Technology", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Newcastle University", "relation": "Companies", "title": "Companies", "to": "Red Hat", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Newcastle University", "relation": "Companies", "title": "Companies", "to": "PricewaterhouseCoopers", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Newcastle University", "relation": "Governments", "title": "Governments", "to": "War Office", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Newcastle University", "relation": "Governments", "title": "Governments", "to": "Royal Army Medical Corps", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Newcastle University", "relation": "Governments", "title": "Governments", "to": "National Health Service (England)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Newcastle University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Newcastle University Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Newcastle University", "relation": "Student Organizations", "title": "Student Organizations", "to": "North East Routes into Languages Consortium", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Newcastle University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Newcastle University Singapore", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Newcastle University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Newcastle University Medicine Malaysia", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Newcastle University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "AACSB", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Newcastle University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Association of MBAs", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Newcastle University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "EQUIS", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Newcastle University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Royal College of Surgeons of England", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Newcastle University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Institute of Chartered Accountants in England \u0026 Wales", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Newcastle University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Newcastle Institute for Social Renewal", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Newcastle University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Digital Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Newcastle University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Biosciences Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Newcastle University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Population Health Sciences Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Newcastle University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Translational and Clinical Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Newcastle University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Confucius Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Newcastle University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Cam\u00f5es Institute", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Newcastle University", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Newcastle University", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Newcastle University", "relation": "Affiliations", "title": "Affiliations", "to": "N8 Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Newcastle University", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Newcastle University", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "Newcastle University", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Great North Museum: Hancock", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Newcastle University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Herschel Building", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Information and Communication Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Financial and Professional Services Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "Newcastle University", "relation": "category_link", "title": "category_link", "to": "Internal organization/department of the university", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Newcastle University", "relation": "School", "title": "School", "to": "Newcastle University Business School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Newcastle University", "relation": "School", "title": "School", "to": "Newcastle Law School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Newcastle University", "relation": "School", "title": "School", "to": "School of Modern Languages", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Newcastle University", "relation": "School", "title": "School", "to": "Newcastle University Dental School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Newcastle University", "relation": "School", "title": "School", "to": "Newcastle University Medical School", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Newcastle University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Dove Marine Laboratory", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>
