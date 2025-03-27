@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Kent", "label": "University of Kent", "shape": "dot", "size": 80, "title": "University of Kent (University)", "type": "university"}, {"color": "#90EE90", "edge_type": "School", "id": "Kent School of Architecture and Planning", "label": "Kent School of Architecture and Planning", "shape": "triangle", "size": 17, "title": "Kent School of Architecture and Planning (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Arts", "label": "School of Arts", "shape": "triangle", "size": 17, "title": "School of Arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of English", "label": "School of English", "shape": "triangle", "size": 17, "title": "School of English (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of European Culture and Languages", "label": "School of European Culture and Languages", "shape": "triangle", "size": 17, "title": "School of European Culture and Languages (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of History", "label": "School of History", "shape": "triangle", "size": 17, "title": "School of History (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Music and Fine Art", "label": "School of Music and Fine Art", "shape": "triangle", "size": 17, "title": "School of Music and Fine Art (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Bioscience", "label": "School of Bioscience", "shape": "triangle", "size": 17, "title": "School of Bioscience (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing", "label": "School of Computing", "shape": "triangle", "size": 17, "title": "School of Computing (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Engineering and Digital Arts", "label": "School of Engineering and Digital Arts", "shape": "triangle", "size": 17, "title": "School of Engineering and Digital Arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Mathematics, Statistics and Actuarial Science", "label": "School of Mathematics, Statistics and Actuarial Science", "shape": "triangle", "size": 17, "title": "School of Mathematics, Statistics and Actuarial Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Medway School of Pharmacy", "label": "Medway School of Pharmacy", "shape": "triangle", "size": 17, "title": "Medway School of Pharmacy (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Kent and Medway Medical School", "label": "Kent and Medway Medical School", "shape": "triangle", "size": 17, "title": "Kent and Medway Medical School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Physical Sciences", "label": "School of Physical Sciences", "shape": "triangle", "size": 17, "title": "School of Physical Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Sport and Exercise Sciences", "label": "School of Sport and Exercise Sciences", "shape": "triangle", "size": 17, "title": "School of Sport and Exercise Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Anthropology and Conservation", "label": "School of Anthropology and Conservation", "shape": "triangle", "size": 17, "title": "School of Anthropology and Conservation (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Kent Business School", "label": "Kent Business School", "shape": "triangle", "size": 17, "title": "Kent Business School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Economics", "label": "School of Economics", "shape": "triangle", "size": 17, "title": "School of Economics (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Kent Law School", "label": "Kent Law School", "shape": "triangle", "size": 17, "title": "Kent Law School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Politics and International Relations", "label": "School of Politics and International Relations", "shape": "triangle", "size": 17, "title": "School of Politics and International Relations (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Psychology", "label": "School of Psychology", "shape": "triangle", "size": 17, "title": "School of Psychology (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Social Policy, Sociology and Social Research", "label": "School of Social Policy, Sociology and Social Research", "shape": "triangle", "size": 17, "title": "School of Social Policy, Sociology and Social Research (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Centre for Journalism", "label": "Centre for Journalism", "shape": "triangle", "size": 17, "title": "Centre for Journalism (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Music \u0026 Audio Technology", "label": "Centre for Music \u0026 Audio Technology", "shape": "triangle", "size": 17, "title": "Centre for Music \u0026 Audio Technology (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Brussels School of International Studies", "label": "Brussels School of International Studies", "shape": "triangle", "size": 17, "title": "Brussels School of International Studies (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Kent School of Architecture and Planning", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of English", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of European Culture and Languages", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of History", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Music and Fine Art", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Bioscience", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Computing", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Engineering and Digital Arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Mathematics, Statistics and Actuarial Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Medway School of Pharmacy", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Kent and Medway Medical School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Physical Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Sport and Exercise Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Anthropology and Conservation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Kent Business School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Economics", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Kent Law School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Politics and International Relations", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Psychology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "School of Social Policy, Sociology and Social Research", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Kent", "relation": "School", "title": "School", "to": "Centre for Journalism", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Kent", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Music \u0026 Audio Technology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Kent", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Brussels School of International Studies", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>
