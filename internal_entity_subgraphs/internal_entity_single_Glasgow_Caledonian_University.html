@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Glasgow Caledonian University", "label": "Glasgow Caledonian University", "shape": "dot", "size": 88, "title": "Glasgow Caledonian University (University)", "type": "university"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing, Engineering and Built Environment", "label": "School of Computing, Engineering and Built Environment", "shape": "triangle", "size": 17, "title": "School of Computing, Engineering and Built Environment (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Glasgow School for Business and Society", "label": "Glasgow School for Business and Society", "shape": "triangle", "size": 17, "title": "Glasgow School for Business and Society (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health and Life Sciences", "label": "School of Health and Life Sciences", "shape": "triangle", "size": 17, "title": "School of Health and Life Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Applied Science (Control, Instrumentation and Forensics)", "label": "Applied Science (Control, Instrumentation and Forensics)", "shape": "triangle", "size": 17, "title": "Applied Science (Control, Instrumentation and Forensics) (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Electrical and Electronic Engineering", "label": "Electrical and Electronic Engineering", "shape": "triangle", "size": 17, "title": "Electrical and Electronic Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Mechanical Engineering", "label": "Mechanical Engineering", "shape": "triangle", "size": 17, "title": "Mechanical Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Construction and Surveying", "label": "Construction and Surveying", "shape": "triangle", "size": 17, "title": "Construction and Surveying (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Civil Engineering and Environmental Management", "label": "Civil Engineering and Environmental Management", "shape": "triangle", "size": 17, "title": "Civil Engineering and Environmental Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Applied Computer Games", "label": "Applied Computer Games", "shape": "triangle", "size": 17, "title": "Applied Computer Games (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Computing", "label": "Computing", "shape": "triangle", "size": 17, "title": "Computing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Cyber Security and Networks", "label": "Cyber Security and Networks", "shape": "triangle", "size": 17, "title": "Cyber Security and Networks (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Economics \u0026 Law", "label": "Department of Economics \u0026 Law", "shape": "triangle", "size": 17, "title": "Department of Economics \u0026 Law (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Finance, Accountancy \u0026 Risk", "label": "Department of Finance, Accountancy \u0026 Risk", "shape": "triangle", "size": 17, "title": "Department of Finance, Accountancy \u0026 Risk (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Management", "label": "Department of Management", "shape": "triangle", "size": 17, "title": "Department of Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of People and Organisations", "label": "Department of People and Organisations", "shape": "triangle", "size": 17, "title": "Department of People and Organisations (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Media \u0026 Journalism", "label": "Department of Media \u0026 Journalism", "shape": "triangle", "size": 17, "title": "Department of Media \u0026 Journalism (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Social Sciences", "label": "Department of Social Sciences", "shape": "triangle", "size": 17, "title": "Department of Social Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Fashion, Marketing, Tourism \u0026 Events", "label": "Department of Fashion, Marketing, Tourism \u0026 Events", "shape": "triangle", "size": 17, "title": "Department of Fashion, Marketing, Tourism \u0026 Events (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Biological and Biomedical Sciences", "label": "Department of Biological and Biomedical Sciences", "shape": "triangle", "size": 17, "title": "Department of Biological and Biomedical Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Nursing and Community Health", "label": "Department of Nursing and Community Health", "shape": "triangle", "size": 17, "title": "Department of Nursing and Community Health (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Occupational Therapy \u0026 Human Nutrition \u0026 Dietetics", "label": "Department of Occupational Therapy \u0026 Human Nutrition \u0026 Dietetics", "shape": "triangle", "size": 17, "title": "Department of Occupational Therapy \u0026 Human Nutrition \u0026 Dietetics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Physiotherapy and Paramedicine", "label": "Department of Physiotherapy and Paramedicine", "shape": "triangle", "size": 17, "title": "Department of Physiotherapy and Paramedicine (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Podiatry and Radiography", "label": "Department of Podiatry and Radiography", "shape": "triangle", "size": 17, "title": "Department of Podiatry and Radiography (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology", "label": "Department of Psychology", "shape": "triangle", "size": 17, "title": "Department of Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Social Work", "label": "Department of Social Work", "shape": "triangle", "size": 17, "title": "Department of Social Work (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Vision Sciences", "label": "Department of Vision Sciences", "shape": "triangle", "size": 17, "title": "Department of Vision Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Climate Justice", "label": "Centre for Climate Justice", "shape": "triangle", "size": 17, "title": "Centre for Climate Justice (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "The Moffat Centre", "label": "The Moffat Centre", "shape": "triangle", "size": 17, "title": "The Moffat Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "The Institute for Applied Health Research", "label": "The Institute for Applied Health Research", "shape": "triangle", "size": 17, "title": "The Institute for Applied Health Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "The Institute for Sustainable Engineering and Technology Research", "label": "The Institute for Sustainable Engineering and Technology Research", "shape": "triangle", "size": 17, "title": "The Institute for Sustainable Engineering and Technology Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "The Institute for Society and Social Justice Research", "label": "The Institute for Society and Social Justice Research", "shape": "triangle", "size": 17, "title": "The Institute for Society and Social Justice Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "The Yunus Centre for Social Business and Health", "label": "The Yunus Centre for Social Business and Health", "shape": "triangle", "size": 17, "title": "The Yunus Centre for Social Business and Health (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "WiSE Economy Research Centre", "label": "WiSE Economy Research Centre", "shape": "triangle", "size": 17, "title": "WiSE Economy Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#90EE90", "from": "Glasgow Caledonian University", "relation": "School", "title": "School", "to": "School of Computing, Engineering and Built Environment", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Glasgow Caledonian University", "relation": "School", "title": "School", "to": "Glasgow School for Business and Society", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Glasgow Caledonian University", "relation": "School", "title": "School", "to": "School of Health and Life Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Applied Science (Control, Instrumentation and Forensics)", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Electrical and Electronic Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Mechanical Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Construction and Surveying", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Civil Engineering and Environmental Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Applied Computer Games", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Computing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Cyber Security and Networks", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Economics \u0026 Law", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Finance, Accountancy \u0026 Risk", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of People and Organisations", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Media \u0026 Journalism", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Social Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Fashion, Marketing, Tourism \u0026 Events", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Biological and Biomedical Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Nursing and Community Health", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Occupational Therapy \u0026 Human Nutrition \u0026 Dietetics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Physiotherapy and Paramedicine", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Podiatry and Radiography", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Social Work", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Glasgow Caledonian University", "relation": "Department", "title": "Department", "to": "Department of Vision Sciences", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Climate Justice", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "The Moffat Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "The Institute for Applied Health Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "The Institute for Sustainable Engineering and Technology Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "The Institute for Society and Social Justice Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "The Yunus Centre for Social Business and Health", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Glasgow Caledonian University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "WiSE Economy Research Centre", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>

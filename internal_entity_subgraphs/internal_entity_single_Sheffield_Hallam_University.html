@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Sheffield Hallam University", "label": "Sheffield Hallam University", "shape": "dot", "size": 101, "title": "Sheffield Hallam University (University)", "type": "university"}, {"color": "#90EE90", "edge_type": "School", "id": "Sheffield Business School", "label": "Sheffield Business School", "shape": "triangle", "size": 17, "title": "Sheffield Business School (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Finance, Accounting and Business Systems", "label": "Department of Finance, Accounting and Business Systems", "shape": "triangle", "size": 17, "title": "Department of Finance, Accounting and Business Systems (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Management", "label": "Department of Management", "shape": "triangle", "size": 17, "title": "Department of Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Service Sector Management", "label": "Department of Service Sector Management", "shape": "triangle", "size": 17, "title": "Department of Service Sector Management (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Computing", "label": "Department of Computing", "shape": "triangle", "size": 17, "title": "Department of Computing (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Engineering and Mathematics", "label": "Department of Engineering and Mathematics", "shape": "triangle", "size": 17, "title": "Department of Engineering and Mathematics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Art and Design", "label": "Department of Art and Design", "shape": "triangle", "size": 17, "title": "Department of Art and Design (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Media Arts and Communication", "label": "Department of Media Arts and Communication", "shape": "triangle", "size": 17, "title": "Department of Media Arts and Communication (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of the Natural and Built Environment", "label": "Department of the Natural and Built Environment", "shape": "triangle", "size": 17, "title": "Department of the Natural and Built Environment (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Education, Childhood and Inclusion", "label": "Department of Education, Childhood and Inclusion", "shape": "triangle", "size": 17, "title": "Department of Education, Childhood and Inclusion (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Teacher Education", "label": "Department of Teacher Education", "shape": "triangle", "size": 17, "title": "Department of Teacher Education (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology, Sociology and Politics", "label": "Department of Psychology, Sociology and Politics", "shape": "triangle", "size": 17, "title": "Department of Psychology, Sociology and Politics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Humanities", "label": "Department of Humanities", "shape": "triangle", "size": 17, "title": "Department of Humanities (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Law and Criminology", "label": "Department of Law and Criminology", "shape": "triangle", "size": 17, "title": "Department of Law and Criminology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Allied Health Professions", "label": "Department of Allied Health Professions", "shape": "triangle", "size": 17, "title": "Department of Allied Health Professions (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Biosciences and Chemistry", "label": "Department of Biosciences and Chemistry", "shape": "triangle", "size": 17, "title": "Department of Biosciences and Chemistry (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Nursing and Midwifery", "label": "Department of Nursing and Midwifery", "shape": "triangle", "size": 17, "title": "Department of Nursing and Midwifery (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Social Work and Social Care and Community Studies", "label": "Department of Social Work and Social Care and Community Studies", "shape": "triangle", "size": 17, "title": "Department of Social Work and Social Care and Community Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "TESOL Centre", "label": "TESOL Centre", "shape": "triangle", "size": 17, "title": "TESOL Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Leadership", "label": "Centre for Leadership", "shape": "triangle", "size": 17, "title": "Centre for Leadership (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Postgraduate Medical and Dental Education", "label": "Centre for Postgraduate Medical and Dental Education", "shape": "triangle", "size": 17, "title": "Centre for Postgraduate Medical and Dental Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Advanced Wellbeing Research Centre", "label": "Advanced Wellbeing Research Centre", "shape": "triangle", "size": 17, "title": "Advanced Wellbeing Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Biomolecular Sciences Research Centre", "label": "Biomolecular Sciences Research Centre", "shape": "triangle", "size": 17, "title": "Biomolecular Sciences Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Behavioural Science and Applied Psychology", "label": "Centre for Behavioural Science and Applied Psychology", "shape": "triangle", "size": 17, "title": "Centre for Behavioural Science and Applied Psychology (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Development and Research in Education", "label": "Centre for Development and Research in Education", "shape": "triangle", "size": 17, "title": "Centre for Development and Research in Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Regional Economic and Social Research", "label": "Centre for Regional Economic and Social Research", "shape": "triangle", "size": 17, "title": "Centre for Regional Economic and Social Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Sport and Exercise Science", "label": "Centre for Sport and Exercise Science", "shape": "triangle", "size": 17, "title": "Centre for Sport and Exercise Science (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Sports Engineering Research", "label": "Centre for Sports Engineering Research", "shape": "triangle", "size": 17, "title": "Centre for Sports Engineering Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Design Futures Centre for Industrial Collaboration", "label": "Design Futures Centre for Industrial Collaboration", "shape": "triangle", "size": 17, "title": "Design Futures Centre for Industrial Collaboration (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Humanities Research Centre", "label": "Humanities Research Centre", "shape": "triangle", "size": 17, "title": "Humanities Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Lab4Living", "label": "Lab4Living", "shape": "triangle", "size": 17, "title": "Lab4Living (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "National Centre of Excellence for Food Engineering", "label": "National Centre of Excellence for Food Engineering", "shape": "triangle", "size": 17, "title": "National Centre of Excellence for Food Engineering (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sport Industry Research Centre", "label": "Sport Industry Research Centre", "shape": "triangle", "size": 17, "title": "Sport Industry Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sport and Physical Activity Research Centre", "label": "Sport and Physical Activity Research Centre", "shape": "triangle", "size": 17, "title": "Sport and Physical Activity Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Cultural, Communication and Computing Research Institute", "label": "Cultural, Communication and Computing Research Institute", "shape": "triangle", "size": 17, "title": "Cultural, Communication and Computing Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Art, Design and Media Research Centre", "label": "Art, Design and Media Research Centre", "shape": "triangle", "size": 17, "title": "Art, Design and Media Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Communication and Computing Research Centre", "label": "Communication and Computing Research Centre", "shape": "triangle", "size": 17, "title": "Communication and Computing Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Materials and Engineering Research Institute", "label": "Materials and Engineering Research Institute", "shape": "triangle", "size": 17, "title": "Materials and Engineering Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Automation and Robotics Research", "label": "Centre for Automation and Robotics Research", "shape": "triangle", "size": 17, "title": "Centre for Automation and Robotics Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "National HIPIMS Technology Centre", "label": "National HIPIMS Technology Centre", "shape": "triangle", "size": 17, "title": "National HIPIMS Technology Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Polymers, Nanocomposites and Modelling Research Centre", "label": "Polymers, Nanocomposites and Modelling Research Centre", "shape": "triangle", "size": 17, "title": "Polymers, Nanocomposites and Modelling Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Structural Materials and Integrity Research Centre", "label": "Structural Materials and Integrity Research Centre", "shape": "triangle", "size": 17, "title": "Structural Materials and Integrity Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Thin Films Research Centre", "label": "Thin Films Research Centre", "shape": "triangle", "size": 17, "title": "Thin Films Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sheffield Business School Research Institute", "label": "Sheffield Business School Research Institute", "shape": "triangle", "size": 17, "title": "Sheffield Business School Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sheffield Institute for Policy Studies", "label": "Sheffield Institute for Policy Studies", "shape": "triangle", "size": 17, "title": "Sheffield Institute for Policy Studies (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sheffield Institute of Education", "label": "Sheffield Institute of Education", "shape": "triangle", "size": 17, "title": "Sheffield Institute of Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Voluntary Action Research Group", "label": "Voluntary Action Research Group", "shape": "triangle", "size": 17, "title": "Voluntary Action Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Film, Television, Theatre and Performance Research Network", "label": "Film, Television, Theatre and Performance Research Network", "shape": "triangle", "size": 17, "title": "Film, Television, Theatre and Performance Research Network (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Health and Social Care Research", "label": "Health and Social Care Research", "shape": "triangle", "size": 17, "title": "Health and Social Care Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Law Research Group", "label": "Law Research Group", "shape": "triangle", "size": 17, "title": "Law Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Natural and Built Environment Research Group", "label": "Natural and Built Environment Research Group", "shape": "triangle", "size": 17, "title": "Natural and Built Environment Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Outdoor Recreation Research Group", "label": "Outdoor Recreation Research Group", "shape": "triangle", "size": 17, "title": "Outdoor Recreation Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Physical Activity, Wellness and Public Health Research Group", "label": "Physical Activity, Wellness and Public Health Research Group", "shape": "triangle", "size": 17, "title": "Physical Activity, Wellness and Public Health Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sheffield Addiction Research Recovery Group", "label": "Sheffield Addiction Research Recovery Group", "shape": "triangle", "size": 17, "title": "Sheffield Addiction Research Recovery Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sport and Human Performance Research Group", "label": "Sport and Human Performance Research Group", "shape": "triangle", "size": 17, "title": "Sport and Human Performance Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sports Engineering Research Group", "label": "Sports Engineering Research Group", "shape": "triangle", "size": 17, "title": "Sports Engineering Research Group (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sports Industry Research Group", "label": "Sports Industry Research Group", "shape": "triangle", "size": 17, "title": "Sports Industry Research Group (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#90EE90", "from": "Sheffield Hallam University", "relation": "School", "title": "School", "to": "Sheffield Business School", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Finance, Accounting and Business Systems", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Service Sector Management", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Computing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Engineering and Mathematics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Art and Design", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Media Arts and Communication", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of the Natural and Built Environment", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Education, Childhood and Inclusion", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Teacher Education", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Psychology, Sociology and Politics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Humanities", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Law and Criminology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Allied Health Professions", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Biosciences and Chemistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Nursing and Midwifery", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Sheffield Hallam University", "relation": "Department", "title": "Department", "to": "Department of Social Work and Social Care and Community Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "TESOL Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Leadership", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Postgraduate Medical and Dental Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Advanced Wellbeing Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Biomolecular Sciences Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Behavioural Science and Applied Psychology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Development and Research in Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Regional Economic and Social Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Sport and Exercise Science", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Sports Engineering Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Design Futures Centre for Industrial Collaboration", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Humanities Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Lab4Living", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "National Centre of Excellence for Food Engineering", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sport Industry Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sport and Physical Activity Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Cultural, Communication and Computing Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Art, Design and Media Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Communication and Computing Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Materials and Engineering Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Automation and Robotics Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "National HIPIMS Technology Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Polymers, Nanocomposites and Modelling Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Structural Materials and Integrity Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Thin Films Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sheffield Business School Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sheffield Institute for Policy Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sheffield Institute of Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Voluntary Action Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Film, Television, Theatre and Performance Research Network", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Health and Social Care Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Law Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Natural and Built Environment Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Outdoor Recreation Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Physical Activity, Wellness and Public Health Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sheffield Addiction Research Recovery Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sport and Human Performance Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sports Engineering Research Group", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Sheffield Hallam University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sports Industry Research Group", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>

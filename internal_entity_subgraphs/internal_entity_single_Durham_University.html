@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Durham University", "label": "Durham University", "shape": "dot", "size": 93, "title": "Durham University (University)", "type": "university"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Social Sciences \u0026 Health", "label": "Faculty of Social Sciences \u0026 Health", "shape": "triangle", "size": 17, "title": "Faculty of Social Sciences \u0026 Health (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts and Humanities", "label": "Faculty of Arts and Humanities", "shape": "triangle", "size": 17, "title": "Faculty of Arts and Humanities (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science", "label": "Faculty of Science", "shape": "triangle", "size": 17, "title": "Faculty of Science (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education", "label": "School of Education", "shape": "triangle", "size": 17, "title": "School of Education (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Government and International Affairs", "label": "School of Government and International Affairs", "shape": "triangle", "size": 17, "title": "School of Government and International Affairs (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Modern Languages and Cultures", "label": "School of Modern Languages and Cultures", "shape": "triangle", "size": 17, "title": "School of Modern Languages and Cultures (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Anthropology", "label": "Department of Anthropology", "shape": "triangle", "size": 17, "title": "Department of Anthropology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Archaeology", "label": "Department of Archaeology", "shape": "triangle", "size": 17, "title": "Department of Archaeology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Durham Centre for Academic Development", "label": "Durham Centre for Academic Development", "shape": "triangle", "size": 17, "title": "Durham Centre for Academic Development (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Geography", "label": "Department of Geography", "shape": "triangle", "size": 17, "title": "Department of Geography (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Durham Law School", "label": "Durham Law School", "shape": "triangle", "size": 17, "title": "Durham Law School (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Sociology", "label": "Department of Sociology", "shape": "triangle", "size": 17, "title": "Department of Sociology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Sport and Exercise Sciences", "label": "Department of Sport and Exercise Sciences", "shape": "triangle", "size": 17, "title": "Department of Sport and Exercise Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Classics \u0026 Ancient History", "label": "Department of Classics \u0026 Ancient History", "shape": "triangle", "size": 17, "title": "Department of Classics \u0026 Ancient History (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of English Studies", "label": "Department of English Studies", "shape": "triangle", "size": 17, "title": "Department of English Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of History", "label": "Department of History", "shape": "triangle", "size": 17, "title": "Department of History (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Music", "label": "Department of Music", "shape": "triangle", "size": 17, "title": "Department of Music (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Philosophy", "label": "Department of Philosophy", "shape": "triangle", "size": 17, "title": "Department of Philosophy (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Theology and Religion", "label": "Department of Theology and Religion", "shape": "triangle", "size": 17, "title": "Department of Theology and Religion (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Biosciences", "label": "Department of Biosciences", "shape": "triangle", "size": 17, "title": "Department of Biosciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Chemistry", "label": "Department of Chemistry", "shape": "triangle", "size": 17, "title": "Department of Chemistry (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Computer Science", "label": "Department of Computer Science", "shape": "triangle", "size": 17, "title": "Department of Computer Science (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Earth Sciences", "label": "Department of Earth Sciences", "shape": "triangle", "size": 17, "title": "Department of Earth Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Durham University School of Engineering", "label": "Durham University School of Engineering", "shape": "triangle", "size": 17, "title": "Durham University School of Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Mathematical Sciences", "label": "Department of Mathematical Sciences", "shape": "triangle", "size": 17, "title": "Department of Mathematical Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Durham University Department of Physics", "label": "Durham University Department of Physics", "shape": "triangle", "size": 17, "title": "Durham University Department of Physics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology", "label": "Department of Psychology", "shape": "triangle", "size": 17, "title": "Department of Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Accounting", "label": "Department of Accounting", "shape": "triangle", "size": 17, "title": "Department of Accounting (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Economics", "label": "Department of Economics", "shape": "triangle", "size": 17, "title": "Department of Economics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Finance", "label": "Department of Finance", "shape": "triangle", "size": 17, "title": "Department of Finance (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Management and Marketing", "label": "Department of Management and Marketing", "shape": "triangle", "size": 17, "title": "Department of Management and Marketing (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Durham Energy Institute", "label": "Durham Energy Institute", "shape": "triangle", "size": 17, "title": "Durham Energy Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Computational Cosmology", "label": "Institute for Computational Cosmology", "shape": "triangle", "size": 17, "title": "Institute for Computational Cosmology (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Medical Humanities", "label": "Institute for Medical Humanities", "shape": "triangle", "size": 17, "title": "Institute for Medical Humanities (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Particle Physics Phenomenology", "label": "Institute for Particle Physics Phenomenology", "shape": "triangle", "size": 17, "title": "Institute for Particle Physics Phenomenology (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Advanced Study", "label": "Institute of Advanced Study", "shape": "triangle", "size": 17, "title": "Institute of Advanced Study (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Hazard, Risk and Resiliance", "label": "Institute of Hazard, Risk and Resiliance", "shape": "triangle", "size": 17, "title": "Institute of Hazard, Risk and Resiliance (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Medieval and Early Modern Studies", "label": "Institute of Medieval and Early Modern Studies", "shape": "triangle", "size": 17, "title": "Institute of Medieval and Early Modern Studies (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Wolfson Research Institute for Health and Wellbeing", "label": "Wolfson Research Institute for Health and Wellbeing", "shape": "triangle", "size": 17, "title": "Wolfson Research Institute for Health and Wellbeing (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "International Boundaries Research Unit", "label": "International Boundaries Research Unit", "shape": "triangle", "size": 17, "title": "International Boundaries Research Unit (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Durham Research in Economic Analysis and Mechanisms", "label": "Durham Research in Economic Analysis and Mechanisms", "shape": "triangle", "size": 17, "title": "Durham Research in Economic Analysis and Mechanisms (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#87CEFA", "from": "Durham University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Social Sciences \u0026 Health", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Durham University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts and Humanities", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Durham University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Durham University", "relation": "School", "title": "School", "to": "School of Education", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Durham University", "relation": "School", "title": "School", "to": "School of Government and International Affairs", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Durham University", "relation": "School", "title": "School", "to": "School of Modern Languages and Cultures", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Anthropology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Archaeology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Durham Centre for Academic Development", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Geography", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Durham Law School", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Sociology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Sport and Exercise Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Classics \u0026 Ancient History", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of English Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of History", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Music", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Philosophy", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Theology and Religion", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Biosciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Chemistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Computer Science", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Earth Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Durham University School of Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Mathematical Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Durham University Department of Physics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Accounting", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Economics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Finance", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Durham University", "relation": "Department", "title": "Department", "to": "Department of Management and Marketing", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Durham Energy Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Computational Cosmology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Medical Humanities", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Particle Physics Phenomenology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Advanced Study", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Hazard, Risk and Resiliance", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Medieval and Early Modern Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Wolfson Research Institute for Health and Wellbeing", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "International Boundaries Research Unit", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Durham University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Durham Research in Economic Analysis and Mechanisms", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>

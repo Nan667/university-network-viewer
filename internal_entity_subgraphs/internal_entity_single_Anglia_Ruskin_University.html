@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Anglia Ruskin University", "label": "Anglia Ruskin University", "shape": "dot", "size": 91, "title": "Anglia Ruskin University (University)", "type": "university"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Business and Law", "label": "Faculty of Business and Law", "shape": "triangle", "size": 17, "title": "Faculty of Business and Law (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts, Humanities, Education \u0026 Social Sciences", "label": "Faculty of Arts, Humanities, Education \u0026 Social Sciences", "shape": "triangle", "size": 17, "title": "Faculty of Arts, Humanities, Education \u0026 Social Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Health, Medicine \u0026 Social Care", "label": "Faculty of Health, Medicine \u0026 Social Care", "shape": "triangle", "size": 17, "title": "Faculty of Health, Medicine \u0026 Social Care (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science \u0026 Engineering", "label": "Faculty of Science \u0026 Engineering", "shape": "triangle", "size": 17, "title": "Faculty of Science \u0026 Engineering (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Economics, Finance and Law", "label": "School of Economics, Finance and Law", "shape": "triangle", "size": 17, "title": "School of Economics, Finance and Law (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Management", "label": "School of Management", "shape": "triangle", "size": 17, "title": "School of Management (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing and Information Science", "label": "School of Computing and Information Science", "shape": "triangle", "size": 17, "title": "School of Computing and Information Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Engineering and the Built Environment", "label": "School of Engineering and the Built Environment", "shape": "triangle", "size": 17, "title": "School of Engineering and the Built Environment (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Life Sciences", "label": "School of Life Sciences", "shape": "triangle", "size": 17, "title": "School of Life Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Psychology", "label": "School of Psychology", "shape": "triangle", "size": 17, "title": "School of Psychology (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Sport and Sensory Science", "label": "School of Sport and Sensory Science", "shape": "triangle", "size": 17, "title": "School of Sport and Sensory Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Writtle School of Agriculture, Animal and Environmental Sciences", "label": "Writtle School of Agriculture, Animal and Environmental Sciences", "shape": "triangle", "size": 17, "title": "Writtle School of Agriculture, Animal and Environmental Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Cambridge School of Art", "label": "Cambridge School of Art", "shape": "triangle", "size": 17, "title": "Cambridge School of Art (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Cambridge School of Creative Industries", "label": "Cambridge School of Creative Industries", "shape": "triangle", "size": 17, "title": "Cambridge School of Creative Industries (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education", "label": "School of Education", "shape": "triangle", "size": 17, "title": "School of Education (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Humanities and Social Sciences", "label": "School of Humanities and Social Sciences", "shape": "triangle", "size": 17, "title": "School of Humanities and Social Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Allied Health and Social Care", "label": "School of Allied Health and Social Care", "shape": "triangle", "size": 17, "title": "School of Allied Health and Social Care (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Medicine", "label": "School of Medicine", "shape": "triangle", "size": 17, "title": "School of Medicine (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Midwifery and Community Health", "label": "School of Midwifery and Community Health", "shape": "triangle", "size": 17, "title": "School of Midwifery and Community Health (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Nursing", "label": "School of Nursing", "shape": "triangle", "size": 17, "title": "School of Nursing (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Built Environment", "label": "Department of Built Environment", "shape": "triangle", "size": 17, "title": "Department of Built Environment (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Computing and Technology", "label": "Department of Computing and Technology", "shape": "triangle", "size": 17, "title": "Department of Computing and Technology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Life Sciences", "label": "Department of Life Sciences", "shape": "triangle", "size": 17, "title": "Department of Life Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology", "label": "Department of Psychology", "shape": "triangle", "size": 17, "title": "Department of Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Vision and Hearing Sciences", "label": "Department of Vision and Hearing Sciences", "shape": "triangle", "size": 17, "title": "Department of Vision and Hearing Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Cambridge Institute for Music Therapy Research", "label": "Cambridge Institute for Music Therapy Research", "shape": "triangle", "size": 17, "title": "Cambridge Institute for Music Therapy Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "International Policing and Public Protection Research Institute", "label": "International Policing and Public Protection Research Institute", "shape": "triangle", "size": 17, "title": "International Policing and Public Protection Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "StoryLab", "label": "StoryLab", "shape": "triangle", "size": 17, "title": "StoryLab (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Global Sustainability Institute", "label": "Global Sustainability Institute", "shape": "triangle", "size": 17, "title": "Global Sustainability Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Policing Institute for the Eastern Region", "label": "Policing Institute for the Eastern Region", "shape": "triangle", "size": 17, "title": "Policing Institute for the Eastern Region (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "StoryLab Research Institute", "label": "StoryLab Research Institute", "shape": "triangle", "size": 17, "title": "StoryLab Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Veterans and Families Research Institute", "label": "Veterans and Families Research Institute", "shape": "triangle", "size": 17, "title": "Veterans and Families Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Vision and Eye Research Institute", "label": "Vision and Eye Research Institute", "shape": "triangle", "size": 17, "title": "Vision and Eye Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Music Therapy Centre", "label": "Music Therapy Centre", "shape": "triangle", "size": 17, "title": "Music Therapy Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Peterborough Research \u0026 Innovation Centre", "label": "Peterborough Research \u0026 Innovation Centre", "shape": "triangle", "size": 17, "title": "Peterborough Research \u0026 Innovation Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "XRP eXtended Reality Peterborough", "label": "XRP eXtended Reality Peterborough", "shape": "triangle", "size": 17, "title": "XRP eXtended Reality Peterborough (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Arise Innovation Hubs", "label": "Arise Innovation Hubs", "shape": "triangle", "size": 17, "title": "Arise Innovation Hubs (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Anglia Ruskin Enterprise Academy (AREA)", "label": "Anglia Ruskin Enterprise Academy (AREA)", "shape": "triangle", "size": 17, "title": "Anglia Ruskin Enterprise Academy (AREA) (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#87CEFA", "from": "Anglia Ruskin University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Business and Law", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Anglia Ruskin University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts, Humanities, Education \u0026 Social Sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Anglia Ruskin University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Health, Medicine \u0026 Social Care", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "Anglia Ruskin University", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science \u0026 Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Economics, Finance and Law", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Management", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Computing and Information Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Engineering and the Built Environment", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Life Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Psychology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Sport and Sensory Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "Writtle School of Agriculture, Animal and Environmental Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "Cambridge School of Art", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "Cambridge School of Creative Industries", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Education", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Humanities and Social Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Allied Health and Social Care", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Medicine", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Midwifery and Community Health", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "Anglia Ruskin University", "relation": "School", "title": "School", "to": "School of Nursing", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Anglia Ruskin University", "relation": "Department", "title": "Department", "to": "Department of Built Environment", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Anglia Ruskin University", "relation": "Department", "title": "Department", "to": "Department of Computing and Technology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Anglia Ruskin University", "relation": "Department", "title": "Department", "to": "Department of Life Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Anglia Ruskin University", "relation": "Department", "title": "Department", "to": "Department of Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "Anglia Ruskin University", "relation": "Department", "title": "Department", "to": "Department of Vision and Hearing Sciences", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Cambridge Institute for Music Therapy Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "International Policing and Public Protection Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "StoryLab", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Global Sustainability Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Policing Institute for the Eastern Region", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "StoryLab Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Veterans and Families Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Vision and Eye Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Music Therapy Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Peterborough Research \u0026 Innovation Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "XRP eXtended Reality Peterborough", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Arise Innovation Hubs", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "Anglia Ruskin University", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Anglia Ruskin Enterprise Academy (AREA)", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>

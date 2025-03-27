@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "King\u0027s College London", "label": "King\u0027s College London", "shape": "dot", "size": 85, "title": "King\u0027s College London (University)", "type": "university"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "King\u0027s College London School of Arts \u0026 Humanities", "label": "King\u0027s College London School of Arts \u0026 Humanities", "shape": "triangle", "size": 17, "title": "King\u0027s College London School of Arts \u0026 Humanities (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of arts and humanities", "label": "Faculty of arts and humanities", "shape": "triangle", "size": 17, "title": "Faculty of arts and humanities (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of dentistry, oral and craniofacial sciences", "label": "Faculty of dentistry, oral and craniofacial sciences", "shape": "triangle", "size": 17, "title": "Faculty of dentistry, oral and craniofacial sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of life sciences and medicine", "label": "Faculty of life sciences and medicine", "shape": "triangle", "size": 17, "title": "Faculty of life sciences and medicine (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of natural, mathematical and engineering sciences", "label": "Faculty of natural, mathematical and engineering sciences", "shape": "triangle", "size": 17, "title": "Faculty of natural, mathematical and engineering sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of social science and public policy", "label": "Faculty of social science and public policy", "shape": "triangle", "size": 17, "title": "Faculty of social science and public policy (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Florence Nightingale Faculty of Nursing and Midwifery", "label": "Florence Nightingale Faculty of Nursing and Midwifery", "shape": "triangle", "size": 17, "title": "Florence Nightingale Faculty of Nursing and Midwifery (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Florence Nightingale Faculty of Nursing, Midwifery and Palliative Care", "label": "Florence Nightingale Faculty of Nursing, Midwifery and Palliative Care", "shape": "triangle", "size": 17, "title": "Florence Nightingale Faculty of Nursing, Midwifery and Palliative Care (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "The Dickson Poon School of Law", "label": "The Dickson Poon School of Law", "shape": "triangle", "size": 17, "title": "The Dickson Poon School of Law (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "King\u0027s Business School", "label": "King\u0027s Business School", "shape": "triangle", "size": 17, "title": "King\u0027s Business School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "GKT School of Medical Education", "label": "GKT School of Medical Education", "shape": "triangle", "size": 17, "title": "GKT School of Medical Education (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education, Communication and Society", "label": "School of Education, Communication and Society", "shape": "triangle", "size": 17, "title": "School of Education, Communication and Society (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "London School of Geometry and Number Theory", "label": "London School of Geometry and Number Theory", "shape": "triangle", "size": 17, "title": "London School of Geometry and Number Theory (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of War Studies, King\u0027s College London", "label": "Department of War Studies, King\u0027s College London", "shape": "triangle", "size": 17, "title": "Department of War Studies, King\u0027s College London (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Defence Studies Department", "label": "Defence Studies Department", "shape": "triangle", "size": 17, "title": "Defence Studies Department (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Psychiatry, Psychology and Neuroscience", "label": "Institute of Psychiatry, Psychology and Neuroscience", "shape": "triangle", "size": 17, "title": "Institute of Psychiatry, Psychology and Neuroscience (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Florence Nightingale Museum", "label": "Florence Nightingale Museum", "shape": "triangle", "size": 17, "title": "Florence Nightingale Museum (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "King\u0027s Centre for Strategic Communications", "label": "King\u0027s Centre for Strategic Communications", "shape": "triangle", "size": 17, "title": "King\u0027s Centre for Strategic Communications (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Liddell Hart Centre for Military Archives", "label": "Liddell Hart Centre for Military Archives", "shape": "triangle", "size": 17, "title": "Liddell Hart Centre for Military Archives (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "King\u0027s Centre for Military Health Research", "label": "King\u0027s Centre for Military Health Research", "shape": "triangle", "size": 17, "title": "King\u0027s Centre for Military Health Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Francis Crick Institute", "label": "Francis Crick Institute", "shape": "triangle", "size": 17, "title": "Francis Crick Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "King\u0027s Health Partners", "label": "King\u0027s Health Partners", "shape": "triangle", "size": 17, "title": "King\u0027s Health Partners (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "MRC Centre for Neurodevelopmental Disorders", "label": "MRC Centre for Neurodevelopmental Disorders", "shape": "triangle", "size": 17, "title": "MRC Centre for Neurodevelopmental Disorders (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "NIHR Biomedical Research Centre at Guy\u0027s and St Thomas\u0027 NHS Foundation Trust and King\u0027s College London", "label": "NIHR Biomedical Research Centre at Guy\u0027s and St Thomas\u0027 NHS Foundation Trust and King\u0027s College London", "shape": "triangle", "size": 17, "title": "NIHR Biomedical Research Centre at Guy\u0027s and St Thomas\u0027 NHS Foundation Trust and King\u0027s College London (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "NIHR Biomedical Research Centre at the South London and Maudsley NHS Foundation Trust and King\u0027s College London", "label": "NIHR Biomedical Research Centre at the South London and Maudsley NHS Foundation Trust and King\u0027s College London", "shape": "triangle", "size": 17, "title": "NIHR Biomedical Research Centre at the South London and Maudsley NHS Foundation Trust and King\u0027s College London (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Drug Control Centre", "label": "Drug Control Centre", "shape": "triangle", "size": 17, "title": "Drug Control Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "London Centre for Nanotechnology", "label": "London Centre for Nanotechnology", "shape": "triangle", "size": 17, "title": "London Centre for Nanotechnology (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Cicely Saunders Institute", "label": "Cicely Saunders Institute", "shape": "triangle", "size": 17, "title": "Cicely Saunders Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "King\u0027s Service Centre", "label": "King\u0027s Service Centre", "shape": "triangle", "size": 17, "title": "King\u0027s Service Centre (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "King\u0027s College London School of Arts \u0026 Humanities", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "Faculty of arts and humanities", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "Faculty of dentistry, oral and craniofacial sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "Faculty of life sciences and medicine", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "Faculty of natural, mathematical and engineering sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "King\u0027s College London", "relation": "Faculty", "title": "Faculty", "to": "Faculty of social science and public policy", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "Florence Nightingale Faculty of Nursing and Midwifery", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "Florence Nightingale Faculty of Nursing, Midwifery and Palliative Care", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "The Dickson Poon School of Law", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "King\u0027s Business School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "GKT School of Medical Education", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "School of Education, Communication and Society", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "King\u0027s College London", "relation": "School", "title": "School", "to": "London School of Geometry and Number Theory", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "King\u0027s College London", "relation": "Department", "title": "Department", "to": "Department of War Studies, King\u0027s College London", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "King\u0027s College London", "relation": "Department", "title": "Department", "to": "Defence Studies Department", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Psychiatry, Psychology and Neuroscience", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Florence Nightingale Museum", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "King\u0027s Centre for Strategic Communications", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Liddell Hart Centre for Military Archives", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "King\u0027s Centre for Military Health Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Francis Crick Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "King\u0027s Health Partners", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "MRC Centre for Neurodevelopmental Disorders", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "NIHR Biomedical Research Centre at Guy\u0027s and St Thomas\u0027 NHS Foundation Trust and King\u0027s College London", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "NIHR Biomedical Research Centre at the South London and Maudsley NHS Foundation Trust and King\u0027s College London", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Drug Control Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "London Centre for Nanotechnology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Cicely Saunders Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "King\u0027s College London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "King\u0027s Service Centre", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>
