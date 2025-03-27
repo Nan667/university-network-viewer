@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Warwick", "label": "University of Warwick", "shape": "dot", "size": 86, "title": "University of Warwick (University)", "type": "university"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts", "label": "Faculty of Arts", "shape": "triangle", "size": 17, "title": "Faculty of Arts (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science, Engineering, and Medicine", "label": "Faculty of Science, Engineering, and Medicine", "shape": "triangle", "size": 17, "title": "Faculty of Science, Engineering, and Medicine (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Social Sciences", "label": "Faculty of Social Sciences", "shape": "triangle", "size": 17, "title": "Faculty of Social Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Modern Languages and Cultures", "label": "School of Modern Languages and Cultures", "shape": "triangle", "size": 17, "title": "School of Modern Languages and Cultures (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Warwick Medical School", "label": "Warwick Medical School", "shape": "triangle", "size": 17, "title": "Warwick Medical School (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Classics and Ancient History", "label": "Classics and Ancient History", "shape": "triangle", "size": 17, "title": "Classics and Ancient History (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Comparative American Studies", "label": "Comparative American Studies", "shape": "triangle", "size": 17, "title": "Comparative American Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "English and Comparative Literary Studies", "label": "English and Comparative Literary Studies", "shape": "triangle", "size": 17, "title": "English and Comparative Literary Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Film and Television Studies", "label": "Film and Television Studies", "shape": "triangle", "size": 17, "title": "Film and Television Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "History", "label": "History", "shape": "triangle", "size": 17, "title": "History (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "History of Art", "label": "History of Art", "shape": "triangle", "size": 17, "title": "History of Art (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Theatre Studies", "label": "Theatre Studies", "shape": "triangle", "size": 17, "title": "Theatre Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Chemistry", "label": "Chemistry", "shape": "triangle", "size": 17, "title": "Chemistry (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Computer Science", "label": "Computer Science", "shape": "triangle", "size": 17, "title": "Computer Science (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Engineering", "label": "Engineering", "shape": "triangle", "size": 17, "title": "Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Life Sciences", "label": "Life Sciences", "shape": "triangle", "size": 17, "title": "Life Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Mathematics", "label": "Mathematics", "shape": "triangle", "size": 17, "title": "Mathematics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Physics", "label": "Physics", "shape": "triangle", "size": 17, "title": "Physics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Psychology", "label": "Psychology", "shape": "triangle", "size": 17, "title": "Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Statistics", "label": "Statistics", "shape": "triangle", "size": 17, "title": "Statistics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "WMG", "label": "WMG", "shape": "triangle", "size": 17, "title": "WMG (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Applied Linguistics", "label": "Applied Linguistics", "shape": "triangle", "size": 17, "title": "Applied Linguistics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Centre for Lifelong Learning", "label": "Centre for Lifelong Learning", "shape": "triangle", "size": 17, "title": "Centre for Lifelong Learning (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Economics", "label": "Economics", "shape": "triangle", "size": 17, "title": "Economics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Education", "label": "Education", "shape": "triangle", "size": 17, "title": "Education (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Health and Social Studies", "label": "Health and Social Studies", "shape": "triangle", "size": 17, "title": "Health and Social Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Law", "label": "Law", "shape": "triangle", "size": 17, "title": "Law (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Philosophy", "label": "Philosophy", "shape": "triangle", "size": 17, "title": "Philosophy (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Politics and International Studies", "label": "Politics and International Studies", "shape": "triangle", "size": 17, "title": "Politics and International Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Sociology", "label": "Sociology", "shape": "triangle", "size": 17, "title": "Sociology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Warwick Business School", "label": "Warwick Business School", "shape": "triangle", "size": 17, "title": "Warwick Business School (Internal Unit: Department)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#87CEFA", "from": "University of Warwick", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Warwick", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science, Engineering, and Medicine", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Warwick", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Social Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Warwick", "relation": "School", "title": "School", "to": "School of Modern Languages and Cultures", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Warwick", "relation": "School", "title": "School", "to": "Warwick Medical School", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Classics and Ancient History", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Comparative American Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "English and Comparative Literary Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Film and Television Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "History", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "History of Art", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Theatre Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Chemistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Computer Science", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Life Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Mathematics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Physics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Statistics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "WMG", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Applied Linguistics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Centre for Lifelong Learning", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Economics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Education", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Health and Social Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Law", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Philosophy", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Politics and International Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Sociology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Warwick", "relation": "Department", "title": "Department", "to": "Warwick Business School", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Internal Unit (triangle, colored by edge)<br><br>
+
+    <b>Edge Types:</b><br>
+    
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FFB347;margin-right:6px;vertical-align:middle;"></span>Centre / Institute<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FFB347;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Centre / Institute)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#87CEFA;margin-right:6px;vertical-align:middle;"></span>Faculty<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #87CEFA;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Faculty)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#90EE90;margin-right:6px;vertical-align:middle;"></span>School<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #90EE90;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (School)<br><br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#FF9999;margin-right:6px;vertical-align:middle;"></span>Department<br>
+        <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #FF9999;margin-right:6px;display:inline-block;"></span>
+        Internal Unit (Department)<br><br>
+        </div></body>
+</html>
