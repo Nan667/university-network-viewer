@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Anglia Ruskin University", "label": "Anglia Ruskin University", "shape": "dot", "size": 93, "title": "Anglia Ruskin University (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Cambridge", "label": "University of Cambridge", "shape": "dot", "size": 17, "title": "University of Cambridge (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Writtle University College", "label": "Writtle University College", "shape": "triangle", "size": 17, "title": "Writtle University College (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Barclays", "label": "Barclays", "shape": "triangle", "size": 17, "title": "Barclays (Entity: Financial and Professional Services Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "British Armed Forces", "label": "British Armed Forces", "shape": "triangle", "size": 17, "title": "British Armed Forces (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Cambridge University Press", "label": "Cambridge University Press", "shape": "triangle", "size": 17, "title": "Cambridge University Press (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Capita Group", "label": "Capita Group", "shape": "triangle", "size": 17, "title": "Capita Group (Entity: Financial and Professional Services Enterprises)", "type": "entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Greenwoods Legal", "label": "Greenwoods Legal", "shape": "triangle", "size": 17, "title": "Greenwoods Legal (Entity: Financial and Professional Services Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Harrods", "label": "Harrods", "shape": "triangle", "size": 17, "title": "Harrods (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Morgan Sindall Infrastructure", "label": "Morgan Sindall Infrastructure", "shape": "triangle", "size": 17, "title": "Morgan Sindall Infrastructure (Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "National Health Service (NHS)", "label": "National Health Service (NHS)", "shape": "triangle", "size": 17, "title": "National Health Service (NHS) (Entity: Governments)", "type": "entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Russian Railways", "label": "Russian Railways", "shape": "triangle", "size": 17, "title": "Russian Railways (Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Softwerx", "label": "Softwerx", "shape": "triangle", "size": 17, "title": "Softwerx (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Timberland (company)", "label": "Timberland (company)", "shape": "triangle", "size": 17, "title": "Timberland (company) (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Triangular Alliance", "label": "Triangular Alliance", "shape": "triangle", "size": 17, "title": "Triangular Alliance (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "United Parcel Service (UPS)", "label": "United Parcel Service (UPS)", "shape": "triangle", "size": 17, "title": "United Parcel Service (UPS) (Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "entity"}, {"category": "Financial and Professional Services Enterprises", "color": "#F4A460", "id": "Virgin Money UK", "label": "Virgin Money UK", "shape": "triangle", "size": 17, "title": "Virgin Money UK (Entity: Financial and Professional Services Enterprises)", "type": "entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Volvo", "label": "Volvo", "shape": "triangle", "size": 17, "title": "Volvo (Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "entity"}, {"category": "Infrastructure and Transportation Logistics Enterprises", "color": "#AFEEEE", "id": "Willmott Dixon", "label": "Willmott Dixon", "shape": "triangle", "size": 17, "title": "Willmott Dixon (Entity: Infrastructure and Transportation Logistics Enterprises)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Essex County Council", "label": "Essex County Council", "shape": "triangle", "size": 17, "title": "Essex County Council (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Cambridgeshire and Peterborough Combined Authority (CPCA)", "label": "Cambridgeshire and Peterborough Combined Authority (CPCA)", "shape": "triangle", "size": 17, "title": "Cambridgeshire and Peterborough Combined Authority (CPCA) (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Peterborough City Council (PCC)", "label": "Peterborough City Council (PCC)", "shape": "triangle", "size": 17, "title": "Peterborough City Council (PCC) (Entity: Governments)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Renew Counselling", "label": "Renew Counselling", "shape": "triangle", "size": 17, "title": "Renew Counselling (Entity: Medical and Healthcare Institutions)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "CNET Training", "label": "CNET Training", "shape": "triangle", "size": 17, "title": "CNET Training (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Cambridge Spark", "label": "Cambridge Spark", "shape": "triangle", "size": 17, "title": "Cambridge Spark (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ARU Cambridge", "label": "ARU Cambridge", "shape": "triangle", "size": 17, "title": "ARU Cambridge (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ARU Chelmsford", "label": "ARU Chelmsford", "shape": "triangle", "size": 17, "title": "ARU Chelmsford (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ARU Writtle", "label": "ARU Writtle", "shape": "triangle", "size": 17, "title": "ARU Writtle (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ARU Peterborough", "label": "ARU Peterborough", "shape": "triangle", "size": 17, "title": "ARU Peterborough (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "ARU London", "label": "ARU London", "shape": "triangle", "size": 17, "title": "ARU London (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Photocentric", "label": "Photocentric", "shape": "triangle", "size": 17, "title": "Photocentric (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Cambridge Institute for Music Therapy Research", "label": "Cambridge Institute for Music Therapy Research", "shape": "triangle", "size": 17, "title": "Cambridge Institute for Music Therapy Research (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Global Sustainability Institute", "label": "Global Sustainability Institute", "shape": "triangle", "size": 17, "title": "Global Sustainability Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Policing Institute for the Eastern Region", "label": "Policing Institute for the Eastern Region", "shape": "triangle", "size": 17, "title": "Policing Institute for the Eastern Region (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "StoryLab Research Institute", "label": "StoryLab Research Institute", "shape": "triangle", "size": 17, "title": "StoryLab Research Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Veterans and Families Research Institute", "label": "Veterans and Families Research Institute", "shape": "triangle", "size": 17, "title": "Veterans and Families Research Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Vision and Eye Research Institute", "label": "Vision and Eye Research Institute", "shape": "triangle", "size": 17, "title": "Vision and Eye Research Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "EFMD", "label": "EFMD", "shape": "triangle", "size": 17, "title": "EFMD (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "University Alliance", "label": "University Alliance", "shape": "triangle", "size": 17, "title": "University Alliance (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Arise Innovation Hubs", "label": "Arise Innovation Hubs", "shape": "triangle", "size": 17, "title": "Arise Innovation Hubs (Entity: Internal organization/department of the university)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Anglia Ruskin University", "relation": "Collaborations", "title": "Collaborations", "to": "University of Cambridge", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Anglia Ruskin University", "relation": "Collaborations", "title": "Collaborations", "to": "Writtle University College", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Barclays", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "British Armed Forces", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Cambridge University Press", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Capita Group", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Greenwoods Legal", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Harrods", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Morgan Sindall Infrastructure", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "National Health Service (NHS)", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Russian Railways", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Softwerx", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Timberland (company)", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Triangular Alliance", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "United Parcel Service (UPS)", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Virgin Money UK", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Volvo", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Anglia Ruskin University", "relation": "Companies", "title": "Companies", "to": "Willmott Dixon", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Anglia Ruskin University", "relation": "Governments", "title": "Governments", "to": "Essex County Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Anglia Ruskin University", "relation": "Governments", "title": "Governments", "to": "Cambridgeshire and Peterborough Combined Authority (CPCA)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Anglia Ruskin University", "relation": "Governments", "title": "Governments", "to": "Peterborough City Council (PCC)", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "Anglia Ruskin University", "relation": "Service Providers", "title": "Service Providers", "to": "Renew Counselling", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "Anglia Ruskin University", "relation": "Service Providers", "title": "Service Providers", "to": "CNET Training", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "Anglia Ruskin University", "relation": "Service Providers", "title": "Service Providers", "to": "Cambridge Spark", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Anglia Ruskin University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "ARU Cambridge", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Anglia Ruskin University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "ARU Chelmsford", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Anglia Ruskin University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "ARU Writtle", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Anglia Ruskin University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "ARU Peterborough", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Anglia Ruskin University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "ARU London", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Anglia Ruskin University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Photocentric", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Cambridge Institute for Music Therapy Research", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Global Sustainability Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Policing Institute for the Eastern Region", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "StoryLab Research Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Veterans and Families Research Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Anglia Ruskin University", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Vision and Eye Research Institute", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Anglia Ruskin University", "relation": "Affiliations", "title": "Affiliations", "to": "EFMD", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Anglia Ruskin University", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Anglia Ruskin University", "relation": "Affiliations", "title": "Affiliations", "to": "University Alliance", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Anglia Ruskin University", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "Anglia Ruskin University", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Arise Innovation Hubs", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>

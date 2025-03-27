@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Queen\u0027s University Belfast", "label": "Queen\u0027s University Belfast", "shape": "dot", "size": 94, "title": "Queen\u0027s University Belfast (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "China Medical University (PRC)", "label": "China Medical University (PRC)", "shape": "triangle", "size": 17, "title": "China Medical University (PRC) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Shenzhen University", "label": "Shenzhen University", "shape": "triangle", "size": 17, "title": "Shenzhen University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Fordham University School of Law", "label": "Fordham University School of Law", "shape": "triangle", "size": 17, "title": "Fordham University School of Law (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Newcastle, Australia", "label": "University of Newcastle, Australia", "shape": "triangle", "size": 17, "title": "University of Newcastle, Australia (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Tasmania", "label": "University of Tasmania", "shape": "triangle", "size": 17, "title": "University of Tasmania (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Queen\u0027s University at Kingston", "label": "Queen\u0027s University at Kingston", "shape": "triangle", "size": 17, "title": "Queen\u0027s University at Kingston (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Alberta", "label": "University of Alberta", "shape": "triangle", "size": 17, "title": "University of Alberta (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Ching Yun University", "label": "Ching Yun University", "shape": "triangle", "size": 17, "title": "Ching Yun University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Top Industrial Managers for Europe (T.I.M.E.) Association", "label": "Top Industrial Managers for Europe (T.I.M.E.) Association", "shape": "triangle", "size": 17, "title": "Top Industrial Managers for Europe (T.I.M.E.) Association (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "British Council\u0027s Business Education Initiative", "label": "British Council\u0027s Business Education Initiative", "shape": "triangle", "size": 17, "title": "British Council\u0027s Business Education Initiative (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Seagate Technology", "label": "Seagate Technology", "shape": "triangle", "size": 17, "title": "Seagate Technology (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "European Union (Erasmus Programme)", "label": "European Union (Erasmus Programme)", "shape": "triangle", "size": 17, "title": "European Union (Erasmus Programme) (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "British Council", "label": "British Council", "shape": "triangle", "size": 17, "title": "British Council (Entity: Governments)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "St Mary\u0027s University College, Belfast", "label": "St Mary\u0027s University College, Belfast", "shape": "triangle", "size": 17, "title": "St Mary\u0027s University College, Belfast (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Stranmillis University College", "label": "Stranmillis University College", "shape": "triangle", "size": 17, "title": "Stranmillis University College (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "QUBSU (Queen\u0027s University Belfast Students\u0027 Union)", "label": "QUBSU (Queen\u0027s University Belfast Students\u0027 Union)", "shape": "triangle", "size": 17, "title": "QUBSU (Queen\u0027s University Belfast Students\u0027 Union) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "AIESEC Local Chapter", "label": "AIESEC Local Chapter", "shape": "triangle", "size": 17, "title": "AIESEC Local Chapter (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "An Cumann Gaelach, QUB", "label": "An Cumann Gaelach, QUB", "shape": "triangle", "size": 17, "title": "An Cumann Gaelach, QUB (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Ulster Scots Society", "label": "Ulster Scots Society", "shape": "triangle", "size": 17, "title": "Ulster Scots Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "International Students Society", "label": "International Students Society", "shape": "triangle", "size": 17, "title": "International Students Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Malaysian Students Society", "label": "Malaysian Students Society", "shape": "triangle", "size": 17, "title": "Malaysian Students Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Queen\u0027s University Mountaineering Club", "label": "Queen\u0027s University Mountaineering Club", "shape": "triangle", "size": 17, "title": "Queen\u0027s University Mountaineering Club (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Dragonslayers Gaming Society", "label": "Dragonslayers Gaming Society", "shape": "triangle", "size": 17, "title": "Dragonslayers Gaming Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Gibson Institute Land, Food and the Environment (GILFE)", "label": "Gibson Institute Land, Food and the Environment (GILFE)", "shape": "triangle", "size": 17, "title": "Gibson Institute Land, Food and the Environment (GILFE) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute for Global Food Security (IGFS)", "label": "Institute for Global Food Security (IGFS)", "shape": "triangle", "size": 17, "title": "Institute for Global Food Security (IGFS) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "The Senator George J. Mitchell Institute For Global Peace, Security And Justice", "label": "The Senator George J. Mitchell Institute For Global Peace, Security And Justice", "shape": "triangle", "size": 17, "title": "The Senator George J. Mitchell Institute For Global Peace, Security And Justice (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Cognition and Culture", "label": "Institute of Cognition and Culture", "shape": "triangle", "size": 17, "title": "Institute of Cognition and Culture (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Electronics, Communications and Information Technology (ECIT)", "label": "Institute of Electronics, Communications and Information Technology (ECIT)", "shape": "triangle", "size": 17, "title": "Institute of Electronics, Communications and Information Technology (ECIT) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Irish Studies", "label": "Institute of Irish Studies", "shape": "triangle", "size": 17, "title": "Institute of Irish Studies (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Professional Legal Studies (IPLS)", "label": "Institute of Professional Legal Studies (IPLS)", "shape": "triangle", "size": 17, "title": "Institute of Professional Legal Studies (IPLS) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Spatial and Environmental Planning (ISEP)", "label": "Institute of Spatial and Environmental Planning (ISEP)", "shape": "triangle", "size": 17, "title": "Institute of Spatial and Environmental Planning (ISEP) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute of Theology", "label": "Institute of Theology", "shape": "triangle", "size": 17, "title": "Institute of Theology (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "William J. Clinton Leadership Institute", "label": "William J. Clinton Leadership Institute", "shape": "triangle", "size": 17, "title": "William J. Clinton Leadership Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Sonic Arts Research Centre (SARC)", "label": "Sonic Arts Research Centre (SARC)", "shape": "triangle", "size": 17, "title": "Sonic Arts Research Centre (SARC) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Athena SWAN", "label": "Athena SWAN", "shape": "triangle", "size": 17, "title": "Athena SWAN (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University Defence Research Collaboration in Signal Processing", "label": "University Defence Research Collaboration in Signal Processing", "shape": "triangle", "size": 17, "title": "University Defence Research Collaboration in Signal Processing (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities Ireland", "label": "Universities Ireland", "shape": "triangle", "size": 17, "title": "Universities Ireland (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Utrecht Network", "label": "Utrecht Network", "shape": "triangle", "size": 17, "title": "Utrecht Network (Entity: Academic alliance/academic affiliation)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "China Medical University (PRC)", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "Shenzhen University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "Fordham University School of Law", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "University of Newcastle, Australia", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "University of Tasmania", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "Queen\u0027s University at Kingston", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "University of Alberta", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "Ching Yun University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "Top Industrial Managers for Europe (T.I.M.E.) Association", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Queen\u0027s University Belfast", "relation": "Collaborations", "title": "Collaborations", "to": "British Council\u0027s Business Education Initiative", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "Queen\u0027s University Belfast", "relation": "Companies", "title": "Companies", "to": "Seagate Technology", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Queen\u0027s University Belfast", "relation": "Governments", "title": "Governments", "to": "European Union (Erasmus Programme)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Queen\u0027s University Belfast", "relation": "Governments", "title": "Governments", "to": "British Council", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Queen\u0027s University Belfast", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "St Mary\u0027s University College, Belfast", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Queen\u0027s University Belfast", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Stranmillis University College", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "QUBSU (Queen\u0027s University Belfast Students\u0027 Union)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "AIESEC Local Chapter", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "An Cumann Gaelach, QUB", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "Ulster Scots Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "International Students Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "Malaysian Students Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "Queen\u0027s University Mountaineering Club", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Queen\u0027s University Belfast", "relation": "Student Organizations", "title": "Student Organizations", "to": "Dragonslayers Gaming Society", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Gibson Institute Land, Food and the Environment (GILFE)", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute for Global Food Security (IGFS)", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "The Senator George J. Mitchell Institute For Global Peace, Security And Justice", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Cognition and Culture", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Electronics, Communications and Information Technology (ECIT)", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Irish Studies", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Professional Legal Studies (IPLS)", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Spatial and Environmental Planning (ISEP)", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute of Theology", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "William J. Clinton Leadership Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "Queen\u0027s University Belfast", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Sonic Arts Research Centre (SARC)", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Queen\u0027s University Belfast", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Athena SWAN", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Queen\u0027s University Belfast", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "University Defence Research Collaboration in Signal Processing", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "Universities Ireland", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Queen\u0027s University Belfast", "relation": "Affiliations", "title": "Affiliations", "to": "Utrecht Network", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>

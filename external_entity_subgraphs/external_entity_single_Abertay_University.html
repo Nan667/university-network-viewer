@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "Abertay University", "label": "Abertay University", "shape": "dot", "size": 96, "title": "Abertay University (University)", "type": "university"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "BBC Scotland", "label": "BBC Scotland", "shape": "triangle", "size": 17, "title": "BBC Scotland (Entity: Media, Culture, and Art)", "type": "entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "BBC Vision", "label": "BBC Vision", "shape": "triangle", "size": 17, "title": "BBC Vision (Entity: Media, Culture, and Art)", "type": "entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "BSkyB", "label": "BSkyB", "shape": "triangle", "size": 17, "title": "BSkyB (Entity: Media, Culture, and Art)", "type": "entity"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "Channel 4", "label": "Channel 4", "shape": "triangle", "size": 17, "title": "Channel 4 (Entity: Media, Culture, and Art)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Electronic Arts", "label": "Electronic Arts", "shape": "triangle", "size": 17, "title": "Electronic Arts (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Codemasters", "label": "Codemasters", "shape": "triangle", "size": 17, "title": "Codemasters (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Blitz Games Studios", "label": "Blitz Games Studios", "shape": "triangle", "size": 17, "title": "Blitz Games Studios (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Rare", "label": "Rare", "shape": "triangle", "size": 17, "title": "Rare (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Sony Computer Entertainment Europe", "label": "Sony Computer Entertainment Europe", "shape": "triangle", "size": 17, "title": "Sony Computer Entertainment Europe (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Microsoft", "label": "Microsoft", "shape": "triangle", "size": 17, "title": "Microsoft (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Disney Interactive", "label": "Disney Interactive", "shape": "triangle", "size": 17, "title": "Disney Interactive (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Quality Assurance Agency for Higher Education", "label": "Quality Assurance Agency for Higher Education", "shape": "triangle", "size": 17, "title": "Quality Assurance Agency for Higher Education (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Scottish Funding Council", "label": "Scottish Funding Council", "shape": "triangle", "size": 17, "title": "Scottish Funding Council (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Scottish Credit and Qualifications Framework", "label": "Scottish Credit and Qualifications Framework", "shape": "triangle", "size": 17, "title": "Scottish Credit and Qualifications Framework (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Association of Chartered Certified Accountants", "label": "Association of Chartered Certified Accountants", "shape": "triangle", "size": 17, "title": "Association of Chartered Certified Accountants (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Association of International Accountants", "label": "Association of International Accountants", "shape": "triangle", "size": 17, "title": "Association of International Accountants (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Association for Counselling and Psychotherapy", "label": "British Association for Counselling and Psychotherapy", "shape": "triangle", "size": 17, "title": "British Association for Counselling and Psychotherapy (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Computer Society", "label": "British Computer Society", "shape": "triangle", "size": 17, "title": "British Computer Society (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Council", "label": "British Council", "shape": "triangle", "size": 17, "title": "British Council (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Psychological Society", "label": "British Psychological Society", "shape": "triangle", "size": 17, "title": "British Psychological Society (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Chartered Institute of Management Accountants", "label": "Chartered Institute of Management Accountants", "shape": "triangle", "size": 17, "title": "Chartered Institute of Management Accountants (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Chartered Institute of Personnel and Development", "label": "Chartered Institute of Personnel and Development", "shape": "triangle", "size": 17, "title": "Chartered Institute of Personnel and Development (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Chartered Institution of Water and Environmental Management", "label": "Chartered Institution of Water and Environmental Management", "shape": "triangle", "size": 17, "title": "Chartered Institution of Water and Environmental Management (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Counselling and Psychotherapy Scotland", "label": "Counselling and Psychotherapy Scotland", "shape": "triangle", "size": 17, "title": "Counselling and Psychotherapy Scotland (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Faculty of Advocates", "label": "Faculty of Advocates", "shape": "triangle", "size": 17, "title": "Faculty of Advocates (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Forensic Science Society", "label": "Forensic Science Society", "shape": "triangle", "size": 17, "title": "Forensic Science Society (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Health and Care Professions Council", "label": "Health and Care Professions Council", "shape": "triangle", "size": 17, "title": "Health and Care Professions Council (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Higher Education Academy", "label": "Higher Education Academy", "shape": "triangle", "size": 17, "title": "Higher Education Academy (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Institute of Biomedical Science", "label": "Institute of Biomedical Science", "shape": "triangle", "size": 17, "title": "Institute of Biomedical Science (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Institute of Food Science and Technology", "label": "Institute of Food Science and Technology", "shape": "triangle", "size": 17, "title": "Institute of Food Science and Technology (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Joint Audio Media Education Services", "label": "Joint Audio Media Education Services", "shape": "triangle", "size": 17, "title": "Joint Audio Media Education Services (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Joint Board of Moderators", "label": "Joint Board of Moderators", "shape": "triangle", "size": 17, "title": "Joint Board of Moderators (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Law Society of Scotland", "label": "Law Society of Scotland", "shape": "triangle", "size": 17, "title": "Law Society of Scotland (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Nursing and Midwifery Council", "label": "Nursing and Midwifery Council", "shape": "triangle", "size": 17, "title": "Nursing and Midwifery Council (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Royal Society of Chemistry", "label": "Royal Society of Chemistry", "shape": "triangle", "size": 17, "title": "Royal Society of Chemistry (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Skillset", "label": "Skillset", "shape": "triangle", "size": 17, "title": "Skillset (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "The Independent Game Developers\u0027 Association", "label": "The Independent Game Developers\u0027 Association", "shape": "triangle", "size": 17, "title": "The Independent Game Developers\u0027 Association (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Abertay Students\u0027 Association", "label": "Abertay Students\u0027 Association", "shape": "triangle", "size": 17, "title": "Abertay Students\u0027 Association (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Ethical Hacking Society", "label": "Ethical Hacking Society", "shape": "triangle", "size": 17, "title": "Ethical Hacking Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Research Excellence Framework", "label": "Research Excellence Framework", "shape": "triangle", "size": 17, "title": "Research Excellence Framework (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Dundee Business School", "label": "Dundee Business School", "shape": "triangle", "size": 17, "title": "Dundee Business School (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Abertay cyberQuarter", "label": "Abertay cyberQuarter", "shape": "triangle", "size": 17, "title": "Abertay cyberQuarter (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Scottish Education Department", "label": "Scottish Education Department", "shape": "triangle", "size": 17, "title": "Scottish Education Department (Entity: Governments)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "MillionPlus", "label": "MillionPlus", "shape": "triangle", "size": 17, "title": "MillionPlus (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "GuildHE", "label": "GuildHE", "shape": "triangle", "size": 17, "title": "GuildHE (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities Scotland", "label": "Universities Scotland", "shape": "triangle", "size": 17, "title": "Universities Scotland (Entity: Academic alliance/academic affiliation)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "BBC Scotland", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "BBC Vision", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "BSkyB", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Channel 4", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Electronic Arts", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Codemasters", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Blitz Games Studios", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Rare", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Sony Computer Entertainment Europe", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Microsoft", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "Abertay University", "relation": "Collaborations", "title": "Collaborations", "to": "Disney Interactive", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Quality Assurance Agency for Higher Education", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Scottish Funding Council", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Scottish Credit and Qualifications Framework", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Association of Chartered Certified Accountants", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Association of International Accountants", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Association for Counselling and Psychotherapy", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Computer Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Council", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Psychological Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Chartered Institute of Management Accountants", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Chartered Institute of Personnel and Development", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Chartered Institution of Water and Environmental Management", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Counselling and Psychotherapy Scotland", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Faculty of Advocates", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Forensic Science Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Health and Care Professions Council", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Higher Education Academy", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Institute of Biomedical Science", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Institute of Food Science and Technology", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Joint Audio Media Education Services", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Joint Board of Moderators", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Law Society of Scotland", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Nursing and Midwifery Council", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Royal Society of Chemistry", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Skillset", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "Abertay University", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "The Independent Game Developers\u0027 Association", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Abertay University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Abertay Students\u0027 Association", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "Abertay University", "relation": "Student Organizations", "title": "Student Organizations", "to": "Ethical Hacking Society", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "Abertay University", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Research Excellence Framework", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Abertay University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Dundee Business School", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "Abertay University", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Abertay cyberQuarter", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "Abertay University", "relation": "Governments", "title": "Governments", "to": "Scottish Education Department", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Abertay University", "relation": "Affiliations", "title": "Affiliations", "to": "MillionPlus", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Abertay University", "relation": "Affiliations", "title": "Affiliations", "to": "GuildHE", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "Abertay University", "relation": "Affiliations", "title": "Affiliations", "to": "Universities Scotland", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>
