@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University College London", "label": "University College London", "shape": "dot", "size": 101, "title": "University College London (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "League of European Research Universities", "label": "League of European Research Universities", "shape": "triangle", "size": 17, "title": "League of European Research Universities (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Yale University", "label": "Yale University", "shape": "triangle", "size": 17, "title": "Yale University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Sydney", "label": "University of Sydney", "shape": "triangle", "size": 17, "title": "University of Sydney (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Toronto", "label": "University of Toronto", "shape": "triangle", "size": 17, "title": "University of Toronto (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Peking University", "label": "Peking University", "shape": "triangle", "size": 17, "title": "Peking University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Zhejiang University", "label": "Zhejiang University", "shape": "triangle", "size": 17, "title": "Zhejiang University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Shanghai Jiao Tong University", "label": "Shanghai Jiao Tong University", "shape": "triangle", "size": 17, "title": "Shanghai Jiao Tong University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Hong Kong", "label": "University of Hong Kong", "shape": "triangle", "size": 17, "title": "University of Hong Kong (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "All India Institutes of Medical Sciences", "label": "All India Institutes of Medical Sciences", "shape": "triangle", "size": 17, "title": "All India Institutes of Medical Sciences (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Indian Institute of Science", "label": "Indian Institute of Science", "shape": "triangle", "size": 17, "title": "Indian Institute of Science (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Indian Institute of Technology, Delhi", "label": "Indian Institute of Technology, Delhi", "shape": "triangle", "size": 17, "title": "Indian Institute of Technology, Delhi (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Indian Institute of Technology, Madras", "label": "Indian Institute of Technology, Madras", "shape": "triangle", "size": 17, "title": "Indian Institute of Technology, Madras (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Osaka University", "label": "Osaka University", "shape": "triangle", "size": 17, "title": "Osaka University (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "National University of Singapore", "label": "National University of Singapore", "shape": "triangle", "size": 17, "title": "National University of Singapore (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "HRH Princess Chulabhorn College of Medical Science", "label": "HRH Princess Chulabhorn College of Medical Science", "shape": "triangle", "size": 17, "title": "HRH Princess Chulabhorn College of Medical Science (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Science and Engineering South", "label": "Science and Engineering South", "shape": "triangle", "size": 17, "title": "Science and Engineering South (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Alan Turing Institute", "label": "Alan Turing Institute", "shape": "triangle", "size": 17, "title": "Alan Turing Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Francis Crick Institute", "label": "Francis Crick Institute", "shape": "triangle", "size": 17, "title": "Francis Crick Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCLPartners", "label": "UCLPartners", "shape": "triangle", "size": 17, "title": "UCLPartners (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Others", "color": "#DA70D6", "id": "BHP Billiton", "label": "BHP Billiton", "shape": "triangle", "size": 17, "title": "BHP Billiton (Entity: Others)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "UK Government (Research Grants and Contracts)", "label": "UK Government (Research Grants and Contracts)", "shape": "triangle", "size": 17, "title": "UK Government (Research Grants and Contracts) (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "European Union (Research Funding and Collaborations)", "label": "European Union (Research Funding and Collaborations)", "shape": "triangle", "size": 17, "title": "European Union (Research Funding and Collaborations) (Entity: Governments)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "UCL Consultants", "label": "UCL Consultants", "shape": "triangle", "size": 17, "title": "UCL Consultants (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Multiple UCL Graduate Start-ups and Spinout Companies", "label": "Multiple UCL Graduate Start-ups and Spinout Companies", "shape": "triangle", "size": 17, "title": "Multiple UCL Graduate Start-ups and Spinout Companies (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of London (prior to gaining university status in 2023)", "label": "University of London (prior to gaining university status in 2023)", "shape": "triangle", "size": 17, "title": "University of London (prior to gaining university status in 2023) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "UCL School of Management", "label": "UCL School of Management", "shape": "triangle", "size": 17, "title": "UCL School of Management (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Institute of Ophthalmology", "label": "UCL Institute of Ophthalmology", "shape": "triangle", "size": 17, "title": "UCL Institute of Ophthalmology (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Institute of Neurology", "label": "UCL Institute of Neurology", "shape": "triangle", "size": 17, "title": "UCL Institute of Neurology (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "UCL School of Pharmacy", "label": "UCL School of Pharmacy", "shape": "triangle", "size": 17, "title": "UCL School of Pharmacy (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "UCL Institute of Education", "label": "UCL Institute of Education", "shape": "triangle", "size": 17, "title": "UCL Institute of Education (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "UCL Union", "label": "UCL Union", "shape": "triangle", "size": 17, "title": "UCL Union (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Association of Commonwealth Universities", "label": "Association of Commonwealth Universities", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "European University Association", "label": "European University Association", "shape": "triangle", "size": 17, "title": "European University Association (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "U7+ Alliance", "label": "U7+ Alliance", "shape": "triangle", "size": 17, "title": "U7+ Alliance (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Universities Research Association", "label": "Universities Research Association", "shape": "triangle", "size": 17, "title": "Universities Research Association (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Here East (Queen Elizabeth Olympic Park, Stratford)", "label": "Here East (Queen Elizabeth Olympic Park, Stratford)", "shape": "triangle", "size": 17, "title": "Here East (Queen Elizabeth Olympic Park, Stratford) (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL East", "label": "UCL East", "shape": "triangle", "size": 17, "title": "UCL East (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Office for Students", "label": "Office for Students", "shape": "triangle", "size": 17, "title": "Office for Students (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "ARPANET (Historical Collaboration)", "label": "ARPANET (Historical Collaboration)", "shape": "triangle", "size": 17, "title": "ARPANET (Historical Collaboration) (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Mullard Space Science Laboratory", "label": "Mullard Space Science Laboratory", "shape": "triangle", "size": 17, "title": "Mullard Space Science Laboratory (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Sainsbury Wellcome Centre for Neural Circuits and Behaviour", "label": "Sainsbury Wellcome Centre for Neural Circuits and Behaviour", "shape": "triangle", "size": 17, "title": "Sainsbury Wellcome Centre for Neural Circuits and Behaviour (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "London Centre for Nanotechnology", "label": "London Centre for Nanotechnology", "shape": "triangle", "size": 17, "title": "London Centre for Nanotechnology (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Centre for the Study of the Legacies of British Slave-ownership", "label": "Centre for the Study of the Legacies of British Slave-ownership", "shape": "triangle", "size": 17, "title": "Centre for the Study of the Legacies of British Slave-ownership (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Press", "label": "UCL Press", "shape": "triangle", "size": 17, "title": "UCL Press (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Business", "label": "UCL Business", "shape": "triangle", "size": 17, "title": "UCL Business (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Institute of Child Health", "label": "UCL Institute of Child Health", "shape": "triangle", "size": 17, "title": "UCL Institute of Child Health (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Eastman Dental Institute", "label": "UCL Eastman Dental Institute", "shape": "triangle", "size": 17, "title": "UCL Eastman Dental Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCL Institute of Jewish Studies", "label": "UCL Institute of Jewish Studies", "shape": "triangle", "size": 17, "title": "UCL Institute of Jewish Studies (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Gatsby Charitable Foundation", "label": "Gatsby Charitable Foundation", "shape": "triangle", "size": 17, "title": "Gatsby Charitable Foundation (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Wellcome Trust", "label": "Wellcome Trust", "shape": "triangle", "size": 17, "title": "Wellcome Trust (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "League of European Research Universities|LERU", "label": "League of European Research Universities|LERU", "shape": "triangle", "size": 17, "title": "League of European Research Universities|LERU (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "SES (universities)|SES", "label": "SES (universities)|SES", "shape": "triangle", "size": 17, "title": "SES (universities)|SES (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"color": "#C89CD4", "id": "University of London", "label": "University of London", "shape": "dot", "size": 17, "title": "University of London (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (Entity: Academic alliance/academic affiliation)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "League of European Research Universities", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Yale University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "University of Sydney", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "University of Toronto", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Peking University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Zhejiang University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Shanghai Jiao Tong University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "University of Hong Kong", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "All India Institutes of Medical Sciences", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Indian Institute of Science", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Indian Institute of Technology, Delhi", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Indian Institute of Technology, Madras", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Osaka University", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "National University of Singapore", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "HRH Princess Chulabhorn College of Medical Science", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Science and Engineering South", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Alan Turing Institute", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "Francis Crick Institute", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University College London", "relation": "Collaborations", "title": "Collaborations", "to": "UCLPartners", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University College London", "relation": "Companies", "title": "Companies", "to": "BHP Billiton", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University College London", "relation": "Governments", "title": "Governments", "to": "UK Government (Research Grants and Contracts)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University College London", "relation": "Governments", "title": "Governments", "to": "European Union (Research Funding and Collaborations)", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "University College London", "relation": "Service Providers", "title": "Service Providers", "to": "UCL Consultants", "width": 1}, {"arrows": "to", "color": "#EB79F2", "from": "University College London", "relation": "Spin-offs", "title": "Spin-offs", "to": "Multiple UCL Graduate Start-ups and Spinout Companies", "width": 1}, {"arrows": "to", "color": "#7987F2", "from": "University College London", "relation": "Parent Organizations", "title": "Parent Organizations", "to": "University of London (prior to gaining university status in 2023)", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University College London", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "UCL School of Management", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Institute of Ophthalmology", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Institute of Neurology", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University College London", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "UCL School of Pharmacy", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University College London", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "UCL Institute of Education", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University College London", "relation": "Student Organizations", "title": "Student Organizations", "to": "UCL Union", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#79F2DC", "from": "University College London", "relation": "International Classifications of Nonprofit Organizations", "title": "International Classifications of Nonprofit Organizations", "to": "Association of Commonwealth Universities", "width": 1}, {"arrows": "to", "color": "#79F2DC", "from": "University College London", "relation": "International Classifications of Nonprofit Organizations", "title": "International Classifications of Nonprofit Organizations", "to": "European University Association", "width": 1}, {"arrows": "to", "color": "#79F2DC", "from": "University College London", "relation": "International Classifications of Nonprofit Organizations", "title": "International Classifications of Nonprofit Organizations", "to": "U7+ Alliance", "width": 1}, {"arrows": "to", "color": "#79F2DC", "from": "University College London", "relation": "International Classifications of Nonprofit Organizations", "title": "International Classifications of Nonprofit Organizations", "to": "Universities Research Association", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University College London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Here East (Queen Elizabeth Olympic Park, Stratford)", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University College London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "UCL East", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University College London", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Office for Students", "width": 1}, {"arrows": "to", "color": "#79F287", "from": "University College London", "relation": "IT Service Providers", "title": "IT Service Providers", "to": "ARPANET (Historical Collaboration)", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University College London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Mullard Space Science Laboratory", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University College London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Sainsbury Wellcome Centre for Neural Circuits and Behaviour", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University College London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "London Centre for Nanotechnology", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University College London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Centre for the Study of the Legacies of British Slave-ownership", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Press", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Business", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Institute of Child Health", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Eastman Dental Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University College London", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "UCL Institute of Jewish Studies", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "University College London", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Gatsby Charitable Foundation", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "University College London", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Wellcome Trust", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "League of European Research Universities|LERU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "SES (universities)|SES", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "University of London", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University College London", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>
