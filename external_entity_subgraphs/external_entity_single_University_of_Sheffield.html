@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Sheffield", "label": "University of Sheffield", "shape": "dot", "size": 96, "title": "University of Sheffield (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Worldwide Universities Network", "label": "Worldwide Universities Network", "shape": "triangle", "size": 17, "title": "Worldwide Universities Network (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "N8 Group", "label": "N8 Group", "shape": "triangle", "size": 17, "title": "N8 Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "White Rose University Consortium", "label": "White Rose University Consortium", "shape": "triangle", "size": 17, "title": "White Rose University Consortium (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Northern Consortium", "label": "Northern Consortium", "shape": "triangle", "size": 17, "title": "Northern Consortium (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Higher Futures", "label": "Higher Futures", "shape": "triangle", "size": 17, "title": "Higher Futures (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Boeing", "label": "Boeing", "shape": "triangle", "size": 17, "title": "Boeing (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Rolls-Royce", "label": "Rolls-Royce", "shape": "triangle", "size": 17, "title": "Rolls-Royce (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Siemens", "label": "Siemens", "shape": "triangle", "size": 17, "title": "Siemens (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Unilever", "label": "Unilever", "shape": "triangle", "size": 17, "title": "Unilever (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Alliance Boots", "label": "Alliance Boots", "shape": "triangle", "size": 17, "title": "Alliance Boots (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "AstraZeneca", "label": "AstraZeneca", "shape": "triangle", "size": 17, "title": "AstraZeneca (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "GlaxoSmithKline", "label": "GlaxoSmithKline", "shape": "triangle", "size": 17, "title": "GlaxoSmithKline (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Imperial Chemical Industries", "label": "Imperial Chemical Industries", "shape": "triangle", "size": 17, "title": "Imperial Chemical Industries (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Slazenger", "label": "Slazenger", "shape": "triangle", "size": 17, "title": "Slazenger (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "BAE Systems", "label": "BAE Systems", "shape": "triangle", "size": 17, "title": "BAE Systems (Entity: Educational and Research Enterprises)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Sheffield City Council", "label": "Sheffield City Council", "shape": "triangle", "size": 17, "title": "Sheffield City Council (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "South Yorkshire Strategic Health Authority", "label": "South Yorkshire Strategic Health Authority", "shape": "triangle", "size": 17, "title": "South Yorkshire Strategic Health Authority (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Privy Council", "label": "Privy Council", "shape": "triangle", "size": 17, "title": "Privy Council (Entity: Governments)", "type": "entity"}, {"category": "Others", "color": "#DA70D6", "id": "Philadelphia Campus of St. Thomas\u0027 Church", "label": "Philadelphia Campus of St. Thomas\u0027 Church", "shape": "triangle", "size": 17, "title": "Philadelphia Campus of St. Thomas\u0027 Church (Entity: Others)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Advanced Manufacturing Research Centre", "label": "Advanced Manufacturing Research Centre", "shape": "triangle", "size": 17, "title": "Advanced Manufacturing Research Centre (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Krebs Institute", "label": "Krebs Institute", "shape": "triangle", "size": 17, "title": "Krebs Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Institute for Sustainable Food", "label": "Institute for Sustainable Food", "shape": "triangle", "size": 17, "title": "Institute for Sustainable Food (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Neuroscience Institute", "label": "Neuroscience Institute", "shape": "triangle", "size": 17, "title": "Neuroscience Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Healthy Lifespan Institute", "label": "Healthy Lifespan Institute", "shape": "triangle", "size": 17, "title": "Healthy Lifespan Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Energy Institute", "label": "Energy Institute", "shape": "triangle", "size": 17, "title": "Energy Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Sheffield Union of Students", "label": "University of Sheffield Union of Students", "shape": "triangle", "size": 17, "title": "University of Sheffield Union of Students (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Sheffield School of Architecture Student Society (SUAS)", "label": "Sheffield School of Architecture Student Society (SUAS)", "shape": "triangle", "size": 17, "title": "Sheffield School of Architecture Student Society (SUAS) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "CITY College, International Faculty of the University of Sheffield", "label": "CITY College, International Faculty of the University of Sheffield", "shape": "triangle", "size": 17, "title": "CITY College, International Faculty of the University of Sheffield (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "General Medical Council", "label": "General Medical Council", "shape": "triangle", "size": 17, "title": "General Medical Council (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Architects Registration Board", "label": "Architects Registration Board", "shape": "triangle", "size": 17, "title": "Architects Registration Board (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Royal Institute of British Architects", "label": "Royal Institute of British Architects", "shape": "triangle", "size": 17, "title": "Royal Institute of British Architects (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Research Libraries UK", "label": "Research Libraries UK", "shape": "triangle", "size": 17, "title": "Research Libraries UK (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs|AMBA", "label": "Association of MBAs|AMBA", "shape": "triangle", "size": 17, "title": "Association of MBAs|AMBA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "CESAER", "label": "CESAER", "shape": "triangle", "size": 17, "title": "CESAER (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "EQUIS", "label": "EQUIS", "shape": "triangle", "size": 17, "title": "EQUIS (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Sutton Trust#Sutton Trust 30|Sutton 30", "label": "Sutton Trust#Sutton Trust 30|Sutton 30", "shape": "triangle", "size": 17, "title": "Sutton Trust#Sutton Trust 30|Sutton 30 (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "White Rose University Consortium|White Rose", "label": "White Rose University Consortium|White Rose", "shape": "triangle", "size": 17, "title": "White Rose University Consortium|White Rose (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Worldwide Universities Network|WUN", "label": "Worldwide Universities Network|WUN", "shape": "triangle", "size": 17, "title": "Worldwide Universities Network|WUN (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Northern General Hospital", "label": "Northern General Hospital", "shape": "triangle", "size": 17, "title": "Northern General Hospital (Entity: Medical and Healthcare Institutions)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Royal Hallamshire Hospital", "label": "Royal Hallamshire Hospital", "shape": "triangle", "size": 17, "title": "Royal Hallamshire Hospital (Entity: Medical and Healthcare Institutions)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Sheffield Children\u0027s Hospital", "label": "Sheffield Children\u0027s Hospital", "shape": "triangle", "size": 17, "title": "Sheffield Children\u0027s Hospital (Entity: Medical and Healthcare Institutions)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Weston Park Hospital", "label": "Weston Park Hospital", "shape": "triangle", "size": 17, "title": "Weston Park Hospital (Entity: Medical and Healthcare Institutions)", "type": "entity"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "Charles Clifford Dental Hospital", "label": "Charles Clifford Dental Hospital", "shape": "triangle", "size": 17, "title": "Charles Clifford Dental Hospital (Entity: Medical and Healthcare Institutions)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Worldwide Universities Network", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "N8 Group", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "White Rose University Consortium", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Northern Consortium", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Higher Futures", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Boeing", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Rolls-Royce", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Siemens", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Unilever", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Alliance Boots", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "AstraZeneca", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "GlaxoSmithKline", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Imperial Chemical Industries", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "Slazenger", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Sheffield", "relation": "Companies", "title": "Companies", "to": "BAE Systems", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Sheffield", "relation": "Governments", "title": "Governments", "to": "Sheffield City Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Sheffield", "relation": "Governments", "title": "Governments", "to": "South Yorkshire Strategic Health Authority", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Sheffield", "relation": "Governments", "title": "Governments", "to": "Privy Council", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "University of Sheffield", "relation": "Service Providers", "title": "Service Providers", "to": "Philadelphia Campus of St. Thomas\u0027 Church", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Sheffield", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Advanced Manufacturing Research Centre", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Sheffield", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Krebs Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Sheffield", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Institute for Sustainable Food", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Sheffield", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Neuroscience Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Sheffield", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Healthy Lifespan Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Sheffield", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Energy Institute", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Sheffield", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Sheffield Union of Students", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Sheffield", "relation": "Student Organizations", "title": "Student Organizations", "to": "Sheffield School of Architecture Student Society (SUAS)", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Sheffield", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "CITY College, International Faculty of the University of Sheffield", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Sheffield", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "General Medical Council", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Sheffield", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Architects Registration Board", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Sheffield", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Royal Institute of British Architects", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Sheffield", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Research Libraries UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs|AMBA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "CESAER", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "EQUIS", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Sutton Trust#Sutton Trust 30|Sutton 30", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "White Rose University Consortium|White Rose", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Sheffield", "relation": "Affiliations", "title": "Affiliations", "to": "Worldwide Universities Network|WUN", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Northern General Hospital", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Royal Hallamshire Hospital", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Sheffield Children\u0027s Hospital", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Weston Park Hospital", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Sheffield", "relation": "Collaborations", "title": "Collaborations", "to": "Charles Clifford Dental Hospital", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>

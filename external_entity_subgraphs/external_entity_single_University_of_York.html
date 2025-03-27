@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of York", "label": "University of York", "shape": "dot", "size": 101, "title": "University of York (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "White Rose University Consortium", "label": "White Rose University Consortium", "shape": "triangle", "size": 17, "title": "White Rose University Consortium (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "N8 Group", "label": "N8 Group", "shape": "triangle", "size": 17, "title": "N8 Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Rowntree\u0027s", "label": "Rowntree\u0027s", "shape": "triangle", "size": 17, "title": "Rowntree\u0027s (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "VetUK", "label": "VetUK", "shape": "triangle", "size": 17, "title": "VetUK (Entity: Campus Life and Food Supply Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "AlphaGraphics", "label": "AlphaGraphics", "shape": "triangle", "size": 17, "title": "AlphaGraphics (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "Xceleron Ltd", "label": "Xceleron Ltd", "shape": "triangle", "size": 17, "title": "Xceleron Ltd (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Secretary of State for Communities and Local Government", "label": "Secretary of State for Communities and Local Government", "shape": "triangle", "size": 17, "title": "Secretary of State for Communities and Local Government (Entity: Governments)", "type": "entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Parliament of England", "label": "Parliament of England", "shape": "triangle", "size": 17, "title": "Parliament of England (Entity: Governments)", "type": "entity"}, {"category": "Information and Communication Enterprises", "color": "#87CEFA", "id": "York Conferences", "label": "York Conferences", "shape": "triangle", "size": 17, "title": "York Conferences (Entity: Information and Communication Enterprises)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Health Economics", "label": "Centre for Health Economics", "shape": "triangle", "size": 17, "title": "Centre for Health Economics (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Renaissance and Early Modern Studies", "label": "Centre for Renaissance and Early Modern Studies", "shape": "triangle", "size": 17, "title": "Centre for Renaissance and Early Modern Studies (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Eighteenth-Century Studies", "label": "Centre for Eighteenth-Century Studies", "shape": "triangle", "size": 17, "title": "Centre for Eighteenth-Century Studies (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Modern Studies", "label": "Centre for Modern Studies", "shape": "triangle", "size": 17, "title": "Centre for Modern Studies (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Medieval Studies", "label": "Centre for Medieval Studies", "shape": "triangle", "size": 17, "title": "Centre for Medieval Studies (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Post-war Reconstruction and Development Unit", "label": "Post-war Reconstruction and Development Unit", "shape": "triangle", "size": 17, "title": "Post-war Reconstruction and Development Unit (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Centre for Applied Human Rights", "label": "Centre for Applied Human Rights", "shape": "triangle", "size": 17, "title": "Centre for Applied Human Rights (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Institute for Effective Education", "label": "Institute for Effective Education", "shape": "triangle", "size": 17, "title": "Institute for Effective Education (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Institute for the Public Understanding of the Past", "label": "Institute for the Public Understanding of the Past", "shape": "triangle", "size": 17, "title": "Institute for the Public Understanding of the Past (Entity: Internal organization/department of the university)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Students\u0027 Union (YUSU)", "label": "University of York Students\u0027 Union (YUSU)", "shape": "triangle", "size": 17, "title": "University of York Students\u0027 Union (YUSU) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Graduate Students\u0027 Association (GSA)", "label": "Graduate Students\u0027 Association (GSA)", "shape": "triangle", "size": 17, "title": "Graduate Students\u0027 Association (GSA) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Labour Club", "label": "University of York Labour Club", "shape": "triangle", "size": 17, "title": "University of York Labour Club (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Liberal Democrat Society", "label": "University of York Liberal Democrat Society", "shape": "triangle", "size": 17, "title": "University of York Liberal Democrat Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Conservative and Unionist Association", "label": "University of York Conservative and Unionist Association", "shape": "triangle", "size": 17, "title": "University of York Conservative and Unionist Association (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Green Party Society", "label": "University of York Green Party Society", "shape": "triangle", "size": 17, "title": "University of York Green Party Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York Student Think Tank", "label": "York Student Think Tank", "shape": "triangle", "size": 17, "title": "York Student Think Tank (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "New Generation Society", "label": "New Generation Society", "shape": "triangle", "size": 17, "title": "New Generation Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York Union Society", "label": "York Union Society", "shape": "triangle", "size": 17, "title": "York Union Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York Student Television (YSTV)", "label": "York Student Television (YSTV)", "shape": "triangle", "size": 17, "title": "York Student Television (YSTV) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University Radio York (URY)", "label": "University Radio York (URY)", "shape": "triangle", "size": 17, "title": "University Radio York (URY) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Nouse", "label": "Nouse", "shape": "triangle", "size": 17, "title": "Nouse (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York Vision", "label": "York Vision", "shape": "triangle", "size": 17, "title": "York Vision (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "The Lemon Press", "label": "The Lemon Press", "shape": "triangle", "size": 17, "title": "The Lemon Press (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "The Yorker", "label": "The Yorker", "shape": "triangle", "size": 17, "title": "The Yorker (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York Student Cinema (YSC)", "label": "York Student Cinema (YSC)", "shape": "triangle", "size": 17, "title": "York Student Cinema (YSC) (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Music Society", "label": "University of York Music Society", "shape": "triangle", "size": 17, "title": "University of York Music Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of York Drama Society", "label": "University of York Drama Society", "shape": "triangle", "size": 17, "title": "University of York Drama Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Gilbert and Sullivan Society", "label": "Gilbert and Sullivan Society", "shape": "triangle", "size": 17, "title": "Gilbert and Sullivan Society (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "PantSoc", "label": "PantSoc", "shape": "triangle", "size": 17, "title": "PantSoc (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "York ComedySoc", "label": "York ComedySoc", "shape": "triangle", "size": 17, "title": "York ComedySoc (Entity: Students and Sports Organizations)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "King\u0027s Manor", "label": "King\u0027s Manor", "shape": "triangle", "size": 17, "title": "King\u0027s Manor (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "York Science Park", "label": "York Science Park", "shape": "triangle", "size": 17, "title": "York Science Park (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "SCONUL", "label": "SCONUL", "shape": "triangle", "size": 17, "title": "SCONUL (Entity: Accrediting Bodies)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "National Science Learning Centre", "label": "National Science Learning Centre", "shape": "triangle", "size": 17, "title": "National Science Learning Centre (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "York Neuroimaging Centre", "label": "York Neuroimaging Centre", "shape": "triangle", "size": 17, "title": "York Neuroimaging Centre (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "York JEOL Nanocentre", "label": "York JEOL Nanocentre", "shape": "triangle", "size": 17, "title": "York JEOL Nanocentre (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Leeds, York \u0026 North Yorkshire Chamber of Commerce", "label": "Leeds, York \u0026 North Yorkshire Chamber of Commerce", "shape": "triangle", "size": 17, "title": "Leeds, York \u0026 North Yorkshire Chamber of Commerce (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "York Plasma Institute", "label": "York Plasma Institute", "shape": "triangle", "size": 17, "title": "York Plasma Institute (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Borthwick Institute for Archives", "label": "Borthwick Institute for Archives", "shape": "triangle", "size": 17, "title": "Borthwick Institute for Archives (Entity: Higher Education and Research Institutions)", "type": "entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "York Civic Trust", "label": "York Civic Trust", "shape": "triangle", "size": 17, "title": "York Civic Trust (Entity: Non governmental/non-profit organizations)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Sutton 13", "label": "Sutton 13", "shape": "triangle", "size": 17, "title": "Sutton 13 (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "White Rose University Consortium|White Rose Consortium", "label": "White Rose University Consortium|White Rose Consortium", "shape": "triangle", "size": 17, "title": "White Rose University Consortium|White Rose Consortium (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Worldwide Universities Network|WUN", "label": "Worldwide Universities Network|WUN", "shape": "triangle", "size": 17, "title": "Worldwide Universities Network|WUN (Entity: Academic alliance/academic affiliation)", "type": "entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Hull York Medical School", "label": "Hull York Medical School", "shape": "triangle", "size": 17, "title": "Hull York Medical School (Entity: Higher Education and Research Institutions)", "type": "entity"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of York", "relation": "Collaborations", "title": "Collaborations", "to": "White Rose University Consortium", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "N8 Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of York", "relation": "Companies", "title": "Companies", "to": "Rowntree\u0027s", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of York", "relation": "Companies", "title": "Companies", "to": "VetUK", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of York", "relation": "Companies", "title": "Companies", "to": "AlphaGraphics", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of York", "relation": "Companies", "title": "Companies", "to": "Xceleron Ltd", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of York", "relation": "Governments", "title": "Governments", "to": "Secretary of State for Communities and Local Government", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of York", "relation": "Governments", "title": "Governments", "to": "Parliament of England", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "University of York", "relation": "Service Providers", "title": "Service Providers", "to": "York Conferences", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Health Economics", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Renaissance and Early Modern Studies", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Eighteenth-Century Studies", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Modern Studies", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Medieval Studies", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Post-war Reconstruction and Development Unit", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Centre for Applied Human Rights", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Institute for Effective Education", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of York", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Institute for the Public Understanding of the Past", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Students\u0027 Union (YUSU)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "Graduate Students\u0027 Association (GSA)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Labour Club", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Liberal Democrat Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Conservative and Unionist Association", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Green Party Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York Student Think Tank", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "New Generation Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York Union Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York Student Television (YSTV)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University Radio York (URY)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "Nouse", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York Vision", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "The Lemon Press", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "The Yorker", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York Student Cinema (YSC)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Music Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of York Drama Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "Gilbert and Sullivan Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "PantSoc", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of York", "relation": "Student Organizations", "title": "Student Organizations", "to": "York ComedySoc", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of York", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "King\u0027s Manor", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of York", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "York Science Park", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of York", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "SCONUL", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of York", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "National Science Learning Centre", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of York", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "York Neuroimaging Centre", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of York", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "York JEOL Nanocentre", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of York", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Leeds, York \u0026 North Yorkshire Chamber of Commerce", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of York", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "York Plasma Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of York", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Borthwick Institute for Archives", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "University of York", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "York Civic Trust", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "Sutton 13", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "White Rose University Consortium|White Rose Consortium", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of York", "relation": "Affiliations", "title": "Affiliations", "to": "Worldwide Universities Network|WUN", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of York", "relation": "Collaborations", "title": "Collaborations", "to": "Hull York Medical School", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style="
+        position: absolute;
+        right: 20px;
+        top: 100px;
+        background-color: white;
+        border: 1px solid gray;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+        max-height: 90%;
+        overflow-y: auto;
+    ">
+    <b>📘 Legend</b><br><br>
+    <b>Node Shapes:</b><br>
+    <span style="display:inline-block;width:12px;height:12px;background-color:#C89CD4;border-radius:50%;margin-right:6px;"></span>
+    University (circle)<br>
+    <span style="display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid #B0B0B0;margin-right:6px;display:inline-block;"></span>
+    Entity (triangle, by category)<br><br>
+
+    <b>Categories:</b><br>
+    
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFB347;margin-right:6px;"></span>Media, Culture, and Art<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#87CEFA;margin-right:6px;"></span>Information and Communication Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#90EE90;margin-right:6px;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FF9999;margin-right:6px;"></span>Students and Sports Organizations<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DDA0DD;margin-right:6px;"></span>Higher Education and Research Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFA07A;margin-right:6px;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#66CDAA;margin-right:6px;"></span>Academic alliance/academic affiliation<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#E6E6FA;margin-right:6px;"></span>Internal organization/department of the university<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F4A460;margin-right:6px;"></span>Financial and Professional Services Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#B0C4DE;margin-right:6px;"></span>Educational and Research Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#FFDAB9;margin-right:6px;"></span>Campus Life and Food Supply Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#AFEEEE;margin-right:6px;"></span>Infrastructure and Transportation Logistics Enterprises<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#F08080;margin-right:6px;"></span>Medical and Healthcare Institutions<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#DA70D6;margin-right:6px;"></span>Others<br>
+        
+        <span style="display:inline-block;width:12px;height:12px;background-color:#C0C0C0;margin-right:6px;"></span>Non governmental/non-profit organizations<br>
+        <br><b>Edge Types:</b><br>
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F27979;margin-right:6px;vertical-align:middle;"></span>Accrediting Bodies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2A379;margin-right:6px;vertical-align:middle;"></span>Affiliations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F2CE79;margin-right:6px;vertical-align:middle;"></span>Collaborations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EBF279;margin-right:6px;vertical-align:middle;"></span>Companies<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C0F279;margin-right:6px;vertical-align:middle;"></span>External Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#95F279;margin-right:6px;vertical-align:middle;"></span>Governments<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F287;margin-right:6px;vertical-align:middle;"></span>IT Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2B2;margin-right:6px;vertical-align:middle;"></span>Internal Research Organisations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79F2DC;margin-right:6px;vertical-align:middle;"></span>International Classifications of Nonprofit Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79DCF2;margin-right:6px;vertical-align:middle;"></span>Non-Governmental Organisations (NGOs)<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#79B2F2;margin-right:6px;vertical-align:middle;"></span>Organizational Divisions<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#7987F2;margin-right:6px;vertical-align:middle;"></span>Parent Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#9579F2;margin-right:6px;vertical-align:middle;"></span>Service Providers<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#C079F2;margin-right:6px;vertical-align:middle;"></span>Shared Campuses<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#EB79F2;margin-right:6px;vertical-align:middle;"></span>Spin-offs<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279CE;margin-right:6px;vertical-align:middle;"></span>Student Organizations<br>
+        
+        <span style="display:inline-block;width:16px;height:2px;background-color:#F279A3;margin-right:6px;vertical-align:middle;"></span>Subsidiaries<br>
+        </div></body>
+</html>
