@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of the Arts London", "label": "University of the Arts London", "shape": "dot", "size": 89, "title": "University of the Arts London (University)", "type": "university"}, {"category": "Media, Culture, and Art", "color": "#FFB347", "id": "South London Gallery", "label": "South London Gallery", "shape": "triangle", "size": 17, "title": "South London Gallery (External Entity: Media, Culture, and Art)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "London County Council", "label": "London County Council", "shape": "triangle", "size": 17, "title": "London County Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Privy Council", "label": "Privy Council", "shape": "triangle", "size": 17, "title": "Privy Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Her Majesty\u0027s Most Honourable Privy Council", "label": "Her Majesty\u0027s Most Honourable Privy Council", "shape": "triangle", "size": 17, "title": "Her Majesty\u0027s Most Honourable Privy Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Technical Education Board", "label": "Technical Education Board", "shape": "triangle", "size": 17, "title": "Technical Education Board (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "King\u0027s Cross campus of Central Saint Martins", "label": "King\u0027s Cross campus of Central Saint Martins", "shape": "triangle", "size": 17, "title": "King\u0027s Cross campus of Central Saint Martins (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Queen\u0027s Anniversary Prize", "label": "Queen\u0027s Anniversary Prize", "shape": "triangle", "size": 17, "title": "Queen\u0027s Anniversary Prize (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Quality Assurance Agency for Higher Education", "label": "Quality Assurance Agency for Higher Education", "shape": "triangle", "size": 17, "title": "Quality Assurance Agency for Higher Education (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Joint Information Systems Committee", "label": "Joint Information Systems Committee", "shape": "triangle", "size": 17, "title": "Joint Information Systems Committee (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Registry of Open Access Repositories", "label": "Registry of Open Access Repositories", "shape": "triangle", "size": 17, "title": "Registry of Open Access Repositories (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of the Arts London Students\u0027 Union", "label": "University of the Arts London Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of the Arts London Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#FFB347", "id": "Media, Culture, and Art", "label": "Media, Culture, and Art", "shape": "box", "size": 17, "title": "Media, Culture, and Art (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "Saint Martin\u0027s School of Art", "label": "Saint Martin\u0027s School of Art", "shape": "star", "size": 17, "title": "Saint Martin\u0027s School of Art (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Chelsea School of Art", "label": "Chelsea School of Art", "shape": "star", "size": 17, "title": "Chelsea School of Art (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Camberwell School of Arts and Crafts", "label": "Camberwell School of Arts and Crafts", "shape": "star", "size": 17, "title": "Camberwell School of Arts and Crafts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Central School of Art and Design", "label": "Central School of Art and Design", "shape": "star", "size": 17, "title": "Central School of Art and Design (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Wimbledon School of Art", "label": "Wimbledon School of Art", "shape": "star", "size": 17, "title": "Wimbledon School of Art (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Camberwell College of Arts", "label": "Camberwell College of Arts", "shape": "star", "size": 17, "title": "Camberwell College of Arts (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Central Saint Martins", "label": "Central Saint Martins", "shape": "star", "size": 17, "title": "Central Saint Martins (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Chelsea College of Arts", "label": "Chelsea College of Arts", "shape": "star", "size": 17, "title": "Chelsea College of Arts (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "London College of Communication", "label": "London College of Communication", "shape": "star", "size": 17, "title": "London College of Communication (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "London College of Fashion", "label": "London College of Fashion", "shape": "star", "size": 17, "title": "London College of Fashion (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Wimbledon College of Arts", "label": "Wimbledon College of Arts", "shape": "star", "size": 17, "title": "Wimbledon College of Arts (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Drama Centre London", "label": "Drama Centre London", "shape": "star", "size": 17, "title": "Drama Centre London (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Byam Shaw School of Art", "label": "Byam Shaw School of Art", "shape": "star", "size": 17, "title": "Byam Shaw School of Art (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "London College of Printing", "label": "London College of Printing", "shape": "star", "size": 17, "title": "London College of Printing (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "College for Distributive Trades", "label": "College for Distributive Trades", "shape": "star", "size": 17, "title": "College for Distributive Trades (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Cordwainers College", "label": "Cordwainers College", "shape": "star", "size": 17, "title": "Cordwainers College (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of the Arts London", "relation": "Collaborations", "title": "Collaborations", "to": "South London Gallery", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of the Arts London", "relation": "Governments", "title": "Governments", "to": "London County Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of the Arts London", "relation": "Governments", "title": "Governments", "to": "Privy Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of the Arts London", "relation": "Governments", "title": "Governments", "to": "Her Majesty\u0027s Most Honourable Privy Council", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "University of the Arts London", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Technical Education Board", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of the Arts London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "King\u0027s Cross campus of Central Saint Martins", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of the Arts London", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Queen\u0027s Anniversary Prize", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of the Arts London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Quality Assurance Agency for Higher Education", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of the Arts London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Joint Information Systems Committee", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of the Arts London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Registry of Open Access Repositories", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of the Arts London", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of the Arts London Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of the Arts London", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Media, Culture, and Art", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of the Arts London", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of the Arts London", "relation": "School", "title": "School", "to": "Saint Martin\u0027s School of Art", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of the Arts London", "relation": "School", "title": "School", "to": "Chelsea School of Art", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of the Arts London", "relation": "School", "title": "School", "to": "Camberwell School of Arts and Crafts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of the Arts London", "relation": "School", "title": "School", "to": "Central School of Art and Design", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of the Arts London", "relation": "School", "title": "School", "to": "Wimbledon School of Art", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Camberwell College of Arts", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Central Saint Martins", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Chelsea College of Arts", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "London College of Communication", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "London College of Fashion", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Wimbledon College of Arts", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Drama Centre London", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Byam Shaw School of Art", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "London College of Printing", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "College for Distributive Trades", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of the Arts London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Cordwainers College", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of East London", "label": "University of East London", "shape": "dot", "size": 87, "title": "University of East London (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Hackney University Technical College", "label": "Hackney University Technical College", "shape": "triangle", "size": 17, "title": "Hackney University Technical College (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Women\u0027s Institute of Management Malaysia", "label": "Women\u0027s Institute of Management Malaysia", "shape": "triangle", "size": 17, "title": "Women\u0027s Institute of Management Malaysia (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#C89CD4", "id": "Birkbeck, University of London", "label": "Birkbeck, University of London", "shape": "dot", "size": 17, "title": "Birkbeck, University of London (University)", "type": "university"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "British Swimming", "label": "British Swimming", "shape": "triangle", "size": 17, "title": "British Swimming (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Singapore Sports Council", "label": "Singapore Sports Council", "shape": "triangle", "size": 17, "title": "Singapore Sports Council (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "National Health Service (England)", "label": "National Health Service (England)", "shape": "triangle", "size": 17, "title": "National Health Service (England) (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "United States Olympic Committee", "label": "United States Olympic Committee", "shape": "triangle", "size": 17, "title": "United States Olympic Committee (External Entity: Governments)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Asics", "label": "Asics", "shape": "triangle", "size": 17, "title": "Asics (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Westfield", "label": "Westfield", "shape": "triangle", "size": 17, "title": "Westfield (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University Square Stratford", "label": "University Square Stratford", "shape": "triangle", "size": 17, "title": "University Square Stratford (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of East London Students\u0027 Union", "label": "University of East London Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of East London Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "National Union of Students (United Kingdom)", "label": "National Union of Students (United Kingdom)", "shape": "triangle", "size": 17, "title": "National Union of Students (United Kingdom) (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "London Organising Committee of the Olympic Games and Paralympic Games", "label": "London Organising Committee of the Olympic Games and Paralympic Games", "shape": "triangle", "size": 17, "title": "London Organising Committee of the Olympic Games and Paralympic Games (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Million+|MillionPlus", "label": "Million+|MillionPlus", "shape": "triangle", "size": 17, "title": "Million+|MillionPlus (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities", "label": "Association of Commonwealth Universities", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Team USA", "label": "Team USA", "shape": "triangle", "size": 17, "title": "Team USA (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FFDAB9", "id": "Campus Life and Food Supply Enterprises", "label": "Campus Life and Food Supply Enterprises", "shape": "box", "size": 17, "title": "Campus Life and Food Supply Enterprises (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "Royal Docks School of Business and Law", "label": "Royal Docks School of Business and Law", "shape": "star", "size": 17, "title": "Royal Docks School of Business and Law (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Architecture, Computing and Engineering", "label": "School of Architecture, Computing and Engineering", "shape": "star", "size": 17, "title": "School of Architecture, Computing and Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education and Communities", "label": "School of Education and Communities", "shape": "star", "size": 17, "title": "School of Education and Communities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health, Sport and Bioscience", "label": "School of Health, Sport and Bioscience", "shape": "star", "size": 17, "title": "School of Health, Sport and Bioscience (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Psychology", "label": "School of Psychology", "shape": "star", "size": 17, "title": "School of Psychology (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Arts and Creative Industries", "label": "School of Arts and Creative Industries", "shape": "star", "size": 17, "title": "School of Arts and Creative Industries (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Graduate school", "label": "Graduate school", "shape": "star", "size": 17, "title": "Graduate school (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Clinical Education", "label": "Centre for Clinical Education", "shape": "star", "size": 17, "title": "Centre for Clinical Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Performing Arts", "label": "Institute of Performing Arts", "shape": "star", "size": 17, "title": "Institute of Performing Arts (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of East London", "relation": "Collaborations", "title": "Collaborations", "to": "Hackney University Technical College", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of East London", "relation": "Collaborations", "title": "Collaborations", "to": "Women\u0027s Institute of Management Malaysia", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of East London", "relation": "Collaborations", "title": "Collaborations", "to": "Birkbeck, University of London", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of East London", "relation": "Collaborations", "title": "Collaborations", "to": "British Swimming", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of East London", "relation": "Collaborations", "title": "Collaborations", "to": "Singapore Sports Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of East London", "relation": "Governments", "title": "Governments", "to": "National Health Service (England)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of East London", "relation": "Governments", "title": "Governments", "to": "United States Olympic Committee", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of East London", "relation": "Companies", "title": "Companies", "to": "Asics", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of East London", "relation": "Companies", "title": "Companies", "to": "Westfield", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of East London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "University Square Stratford", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of East London", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of East London Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of East London", "relation": "Student Organizations", "title": "Student Organizations", "to": "National Union of Students (United Kingdom)", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of East London", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "London Organising Committee of the Olympic Games and Paralympic Games", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of East London", "relation": "Affiliations", "title": "Affiliations", "to": "Million+|MillionPlus", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of East London", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of East London", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of East London", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of East London", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Team USA", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of East London", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of East London", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of East London", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of East London", "relation": "category_link", "title": "category_link", "to": "Campus Life and Food Supply Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of East London", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "Royal Docks School of Business and Law", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "School of Architecture, Computing and Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "School of Education and Communities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "School of Health, Sport and Bioscience", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "School of Psychology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "School of Arts and Creative Industries", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of East London", "relation": "School", "title": "School", "to": "Graduate school", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of East London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Clinical Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of East London", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Performing Arts", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

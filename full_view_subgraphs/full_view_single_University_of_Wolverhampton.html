@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Wolverhampton", "label": "University of Wolverhampton", "shape": "dot", "size": 92, "title": "University of Wolverhampton (University)", "type": "university"}, {"category": "Medical and Healthcare Institutions", "color": "#F08080", "id": "West Midlands Ambulance Service", "label": "West Midlands Ambulance Service", "shape": "triangle", "size": 17, "title": "West Midlands Ambulance Service (External Entity: Medical and Healthcare Institutions)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Wolverhampton City Council", "label": "Wolverhampton City Council", "shape": "triangle", "size": 17, "title": "Wolverhampton City Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Black Country University Technical College", "label": "Black Country University Technical College", "shape": "triangle", "size": 17, "title": "Black Country University Technical College (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Walsall College", "label": "Walsall College", "shape": "triangle", "size": 17, "title": "Walsall College (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Campus Life and Food Supply Enterprises", "color": "#FFDAB9", "id": "Midcounties Co-operative", "label": "Midcounties Co-operative", "shape": "triangle", "size": 17, "title": "Midcounties Co-operative (External Entity: Campus Life and Food Supply Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "West Midlands (county)", "label": "West Midlands (county)", "shape": "triangle", "size": 17, "title": "West Midlands (county) (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Shropshire", "label": "Shropshire", "shape": "triangle", "size": 17, "title": "Shropshire (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Staffordshire", "label": "Staffordshire", "shape": "triangle", "size": 17, "title": "Staffordshire (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "UK Government", "label": "UK Government", "shape": "triangle", "size": 17, "title": "UK Government (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Wolverhampton Students\u0027 Union", "label": "University of Wolverhampton Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of Wolverhampton Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Springfield Campus", "label": "Springfield Campus", "shape": "triangle", "size": 17, "title": "Springfield Campus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Telford Innovation Campus", "label": "Telford Innovation Campus", "shape": "triangle", "size": 17, "title": "Telford Innovation Campus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Walsall Campus", "label": "Walsall Campus", "shape": "triangle", "size": 17, "title": "Walsall Campus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "University of Wolverhampton Science Park", "label": "University of Wolverhampton Science Park", "shape": "star", "size": 17, "title": "University of Wolverhampton Science Park (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Royal Institute of British Architects", "label": "Royal Institute of British Architects", "shape": "triangle", "size": 17, "title": "Royal Institute of British Architects (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Statistical Cybermetrics Research Group", "label": "Statistical Cybermetrics Research Group", "shape": "triangle", "size": 17, "title": "Statistical Cybermetrics Research Group (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Million+", "label": "Million+", "shape": "triangle", "size": 17, "title": "Million+ (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#F08080", "id": "Medical and Healthcare Institutions", "label": "Medical and Healthcare Institutions", "shape": "box", "size": 17, "title": "Medical and Healthcare Institutions (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#FFDAB9", "id": "Campus Life and Food Supply Enterprises", "label": "Campus Life and Food Supply Enterprises", "shape": "box", "size": 17, "title": "Campus Life and Food Supply Enterprises (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts", "label": "Faculty of Arts", "shape": "star", "size": 17, "title": "Faculty of Arts (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Business and Social Sciences", "label": "Faculty of Business and Social Sciences", "shape": "star", "size": 17, "title": "Faculty of Business and Social Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Education, Health and Wellbeing", "label": "Faculty of Education, Health and Wellbeing", "shape": "star", "size": 17, "title": "Faculty of Education, Health and Wellbeing (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science and Engineering", "label": "Faculty of Science and Engineering", "shape": "star", "size": 17, "title": "Faculty of Science and Engineering (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Wolverhampton School of Art", "label": "Wolverhampton School of Art", "shape": "star", "size": 17, "title": "Wolverhampton School of Art (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Architecture and Built Environment", "label": "School of Architecture and Built Environment", "shape": "star", "size": 17, "title": "School of Architecture and Built Environment (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing and IT", "label": "School of Computing and IT", "shape": "star", "size": 17, "title": "School of Computing and IT (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Mathematics and Computer Science", "label": "School of Mathematics and Computer Science", "shape": "star", "size": 17, "title": "School of Mathematics and Computer Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Law, Social Sciences and Communications", "label": "School of Law, Social Sciences and Communications", "shape": "star", "size": 17, "title": "School of Law, Social Sciences and Communications (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health and Wellbeing", "label": "School of Health and Wellbeing", "shape": "star", "size": 17, "title": "School of Health and Wellbeing (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Developmental and Applied Research in Education", "label": "Centre for Developmental and Applied Research in Education", "shape": "star", "size": 17, "title": "Centre for Developmental and Applied Research in Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Learning Enhancement", "label": "Institute for Learning Enhancement", "shape": "star", "size": 17, "title": "Institute for Learning Enhancement (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "e-Innovation Centre", "label": "e-Innovation Centre", "shape": "star", "size": 17, "title": "e-Innovation Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Arena Theatre", "label": "Arena Theatre", "shape": "star", "size": 17, "title": "Arena Theatre (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Wolverhampton", "relation": "Collaborations", "title": "Collaborations", "to": "West Midlands Ambulance Service", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Wolverhampton", "relation": "Collaborations", "title": "Collaborations", "to": "Wolverhampton City Council", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Wolverhampton", "relation": "Collaborations", "title": "Collaborations", "to": "Black Country University Technical College", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Wolverhampton", "relation": "Collaborations", "title": "Collaborations", "to": "Walsall College", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Wolverhampton", "relation": "Companies", "title": "Companies", "to": "Midcounties Co-operative", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Wolverhampton", "relation": "Governments", "title": "Governments", "to": "West Midlands (county)", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Wolverhampton", "relation": "Governments", "title": "Governments", "to": "Shropshire", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Wolverhampton", "relation": "Governments", "title": "Governments", "to": "Staffordshire", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Wolverhampton", "relation": "Governments", "title": "Governments", "to": "UK Government", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Wolverhampton", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Wolverhampton Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Wolverhampton", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Springfield Campus", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Wolverhampton", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Telford Innovation Campus", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Wolverhampton", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Walsall Campus", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Wolverhampton", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "University of Wolverhampton Science Park", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Wolverhampton", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Royal Institute of British Architects", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Wolverhampton", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Statistical Cybermetrics Research Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Wolverhampton", "relation": "Affiliations", "title": "Affiliations", "to": "Million+", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Wolverhampton", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Medical and Healthcare Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Campus Life and Food Supply Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Wolverhampton", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Wolverhampton", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Wolverhampton", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Business and Social Sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Wolverhampton", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Education, Health and Wellbeing", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Wolverhampton", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science and Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "Wolverhampton School of Art", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "School of Architecture and Built Environment", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "School of Computing and IT", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "School of Mathematics and Computer Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "School of Law, Social Sciences and Communications", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Wolverhampton", "relation": "School", "title": "School", "to": "School of Health and Wellbeing", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Wolverhampton", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Developmental and Applied Research in Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Wolverhampton", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Learning Enhancement", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Wolverhampton", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "e-Innovation Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Wolverhampton", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Arena Theatre", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

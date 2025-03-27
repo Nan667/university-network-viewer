@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Hull", "label": "University of Hull", "shape": "dot", "size": 94, "title": "University of Hull (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of York", "label": "University of York", "shape": "dot", "size": 17, "title": "University of York (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Leeds Conservatoire", "label": "Leeds Conservatoire", "shape": "triangle", "size": 17, "title": "Leeds Conservatoire (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "Christian Leadership in Education Office (CLEO)", "label": "Christian Leadership in Education Office (CLEO)", "shape": "triangle", "size": 17, "title": "Christian Leadership in Education Office (CLEO) (External Entity: Others)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Irish School of Ecumenics", "label": "Irish School of Ecumenics", "shape": "triangle", "size": 17, "title": "Irish School of Ecumenics (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Hull City Council", "label": "Hull City Council", "shape": "triangle", "size": 17, "title": "Hull City Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Hull University Union", "label": "Hull University Union", "shape": "triangle", "size": 17, "title": "Hull University Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University College Scarborough", "label": "University College Scarborough", "shape": "triangle", "size": 17, "title": "University College Scarborough (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Estuarine and Coastal Studies", "label": "Institute for Estuarine and Coastal Studies", "shape": "star", "size": 17, "title": "Institute for Estuarine and Coastal Studies (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "E.A. Milne Centre for Astrophysics", "label": "E.A. Milne Centre for Astrophysics", "shape": "star", "size": 17, "title": "E.A. Milne Centre for Astrophysics (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "G W Gray Centre for Advanced Materials", "label": "G W Gray Centre for Advanced Materials", "shape": "star", "size": 17, "title": "G W Gray Centre for Advanced Materials (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Hull Immersive Visualisation Environment (HIVE)", "label": "Hull Immersive Visualisation Environment (HIVE)", "shape": "triangle", "size": 17, "title": "Hull Immersive Visualisation Environment (HIVE) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Postgraduate Medical Institute", "label": "Postgraduate Medical Institute", "shape": "star", "size": 17, "title": "Postgraduate Medical Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Yorkshire Cancer Research-funded Centre for Magnetic Resonance Investigations", "label": "Yorkshire Cancer Research-funded Centre for Magnetic Resonance Investigations", "shape": "triangle", "size": 17, "title": "Yorkshire Cancer Research-funded Centre for Magnetic Resonance Investigations (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Global U8 Consortium|Global U8 (GU8)", "label": "Global U8 Consortium|Global U8 (GU8)", "shape": "triangle", "size": 17, "title": "Global U8 Consortium|Global U8 (GU8) (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Utrecht Network", "label": "Utrecht Network", "shape": "triangle", "size": 17, "title": "Utrecht Network (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#DA70D6", "id": "Others", "label": "Others", "shape": "box", "size": 17, "title": "Others (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science and Engineering", "label": "Faculty of Science and Engineering", "shape": "star", "size": 17, "title": "Faculty of Science and Engineering (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Arts, Culture \u0026 Education", "label": "Faculty of Arts, Culture \u0026 Education", "shape": "star", "size": 17, "title": "Faculty of Arts, Culture \u0026 Education (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Health Sciences", "label": "Faculty of Health Sciences", "shape": "star", "size": 17, "title": "Faculty of Health Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Business, Law \u0026 Politics", "label": "Faculty of Business, Law \u0026 Politics", "shape": "star", "size": 17, "title": "Faculty of Business, Law \u0026 Politics (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Engineering \u0026 Computer Science", "label": "School of Engineering \u0026 Computer Science", "shape": "star", "size": 17, "title": "School of Engineering \u0026 Computer Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Environmental Sciences", "label": "School of Environmental Sciences", "shape": "star", "size": 17, "title": "School of Environmental Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Natural Sciences", "label": "School of Natural Sciences", "shape": "star", "size": 17, "title": "School of Natural Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of The Arts", "label": "School of The Arts", "shape": "star", "size": 17, "title": "School of The Arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education", "label": "School of Education", "shape": "star", "size": 17, "title": "School of Education (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Criminology, Sociology and Policing", "label": "School of Criminology, Sociology and Policing", "shape": "star", "size": 17, "title": "School of Criminology, Sociology and Policing (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Humanities", "label": "School of Humanities", "shape": "star", "size": 17, "title": "School of Humanities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Hull York Medical School", "label": "Hull York Medical School", "shape": "star", "size": 17, "title": "Hull York Medical School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health \u0026 Social Work", "label": "School of Health \u0026 Social Work", "shape": "star", "size": 17, "title": "School of Health \u0026 Social Work (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Life Sciences", "label": "School of Life Sciences", "shape": "star", "size": 17, "title": "School of Life Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Hull University Business School", "label": "Hull University Business School", "shape": "star", "size": 17, "title": "Hull University Business School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Law \u0026 Politics", "label": "School of Law \u0026 Politics", "shape": "star", "size": 17, "title": "School of Law \u0026 Politics (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Hull Immersive Visualisation Environment", "label": "Hull Immersive Visualisation Environment", "shape": "star", "size": 17, "title": "Hull Immersive Visualisation Environment (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Wilberforce Institute for the study of Slavery and Emancipation", "label": "Wilberforce Institute for the study of Slavery and Emancipation", "shape": "star", "size": 17, "title": "Wilberforce Institute for the study of Slavery and Emancipation (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Maritime Historical Studies Centre", "label": "Maritime Historical Studies Centre", "shape": "star", "size": 17, "title": "Maritime Historical Studies Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Confucius Institute", "label": "Confucius Institute", "shape": "star", "size": 17, "title": "Confucius Institute (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Hull", "relation": "Collaborations", "title": "Collaborations", "to": "University of York", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Hull", "relation": "Collaborations", "title": "Collaborations", "to": "Leeds Conservatoire", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Hull", "relation": "Collaborations", "title": "Collaborations", "to": "Christian Leadership in Education Office (CLEO)", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Hull", "relation": "Collaborations", "title": "Collaborations", "to": "Irish School of Ecumenics", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Hull", "relation": "Governments", "title": "Governments", "to": "Hull City Council", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Hull", "relation": "Student Organizations", "title": "Student Organizations", "to": "Hull University Union", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Hull", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "University College Scarborough", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Estuarine and Coastal Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "E.A. Milne Centre for Astrophysics", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "G W Gray Centre for Advanced Materials", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Hull", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Hull Immersive Visualisation Environment (HIVE)", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Postgraduate Medical Institute", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Hull", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Yorkshire Cancer Research-funded Centre for Magnetic Resonance Investigations", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Hull", "relation": "Affiliations", "title": "Affiliations", "to": "Global U8 Consortium|Global U8 (GU8)", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Hull", "relation": "Affiliations", "title": "Affiliations", "to": "Utrecht Network", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Hull", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Hull", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Hull", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Hull", "relation": "category_link", "title": "category_link", "to": "Others", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Hull", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Hull", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Hull", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Hull", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science and Engineering", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Hull", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Arts, Culture \u0026 Education", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Hull", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Health Sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Hull", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Business, Law \u0026 Politics", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Engineering \u0026 Computer Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Environmental Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Natural Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of The Arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Education", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Criminology, Sociology and Policing", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Humanities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "Hull York Medical School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Health \u0026 Social Work", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Life Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "Hull University Business School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Hull", "relation": "School", "title": "School", "to": "School of Law \u0026 Politics", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Hull Immersive Visualisation Environment", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Wilberforce Institute for the study of Slavery and Emancipation", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Maritime Historical Studies Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Hull", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Confucius Institute", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

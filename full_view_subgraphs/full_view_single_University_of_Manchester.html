@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Manchester", "label": "University of Manchester", "shape": "dot", "size": 100, "title": "University of Manchester (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "N8 Group", "label": "N8 Group", "shape": "triangle", "size": 17, "title": "N8 Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Universities Research Association", "label": "Universities Research Association", "shape": "triangle", "size": 17, "title": "Universities Research Association (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Manchester Academic Health Science Centre", "label": "Manchester Academic Health Science Centre", "shape": "triangle", "size": 17, "title": "Manchester Academic Health Science Centre (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "BP International Centre for Advanced Materials", "label": "BP International Centre for Advanced Materials", "shape": "triangle", "size": 17, "title": "BP International Centre for Advanced Materials (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "European Regional Development Fund", "label": "European Regional Development Fund", "shape": "triangle", "size": 17, "title": "European Regional Development Fund (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Engineering and Physical Sciences Research Council", "label": "Engineering and Physical Sciences Research Council", "shape": "triangle", "size": 17, "title": "Engineering and Physical Sciences Research Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Technology Strategy Board", "label": "Technology Strategy Board", "shape": "triangle", "size": 17, "title": "Technology Strategy Board (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "National Graphene Institute", "label": "National Graphene Institute", "shape": "star", "size": 17, "title": "National Graphene Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#C89CD4", "id": "Manchester Metropolitan University", "label": "Manchester Metropolitan University", "shape": "dot", "size": 17, "title": "Manchester Metropolitan University (University)", "type": "university"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "UNESCO", "label": "UNESCO", "shape": "triangle", "size": 17, "title": "UNESCO (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Manchester Students\u0027 Union", "label": "University of Manchester Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of Manchester Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Athletic Union", "label": "Athletic Union", "shape": "triangle", "size": 17, "title": "Athletic Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "Amnesty International", "label": "Amnesty International", "shape": "triangle", "size": 17, "title": "Amnesty International (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities Research Association|URA", "label": "Universities Research Association|URA", "shape": "triangle", "size": 17, "title": "Universities Research Association|URA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Manchester University Press", "label": "Manchester University Press", "shape": "triangle", "size": 17, "title": "Manchester University Press (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Biology, Medicine and Health", "label": "Faculty of Biology, Medicine and Health", "shape": "star", "size": 17, "title": "Faculty of Biology, Medicine and Health (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science and Engineering", "label": "Faculty of Science and Engineering", "shape": "star", "size": 17, "title": "Faculty of Science and Engineering (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Humanities", "label": "Faculty of Humanities", "shape": "star", "size": 17, "title": "Faculty of Humanities (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Biological Sciences, University of Manchester", "label": "School of Biological Sciences, University of Manchester", "shape": "star", "size": 17, "title": "School of Biological Sciences, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Medical Sciences", "label": "School of Medical Sciences", "shape": "star", "size": 17, "title": "School of Medical Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health Sciences", "label": "School of Health Sciences", "shape": "star", "size": 17, "title": "School of Health Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Chemical Engineering and Analytical Sciences, University of Manchester", "label": "School of Chemical Engineering and Analytical Sciences, University of Manchester", "shape": "star", "size": 17, "title": "School of Chemical Engineering and Analytical Sciences, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Department of Computer Science, University of Manchester", "label": "Department of Computer Science, University of Manchester", "shape": "star", "size": 17, "title": "Department of Computer Science, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Electrical and Electronic Engineering, University of Manchester", "label": "School of Electrical and Electronic Engineering, University of Manchester", "shape": "star", "size": 17, "title": "School of Electrical and Electronic Engineering, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Mechanical, Aerospace and Civil Engineering", "label": "School of Mechanical, Aerospace and Civil Engineering", "shape": "star", "size": 17, "title": "School of Mechanical, Aerospace and Civil Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Chemistry, University of Manchester", "label": "School of Chemistry, University of Manchester", "shape": "star", "size": 17, "title": "School of Chemistry, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Department of Earth and Environmental Sciences, University of Manchester", "label": "Department of Earth and Environmental Sciences, University of Manchester", "shape": "star", "size": 17, "title": "Department of Earth and Environmental Sciences, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Physics and Astronomy, University of Manchester", "label": "School of Physics and Astronomy, University of Manchester", "shape": "star", "size": 17, "title": "School of Physics and Astronomy, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Materials, University of Manchester", "label": "School of Materials, University of Manchester", "shape": "star", "size": 17, "title": "School of Materials, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Department of Mathematics, University of Manchester", "label": "Department of Mathematics, University of Manchester", "shape": "star", "size": 17, "title": "Department of Mathematics, University of Manchester (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Faculty of Humanities (University of Manchester)", "label": "Faculty of Humanities (University of Manchester)", "shape": "star", "size": 17, "title": "Faculty of Humanities (University of Manchester) (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Alliance Manchester Business School", "label": "Alliance Manchester Business School", "shape": "star", "size": 17, "title": "Alliance Manchester Business School (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Jodrell Bank Centre for Astrophysics", "label": "Jodrell Bank Centre for Astrophysics", "shape": "star", "size": 17, "title": "Jodrell Bank Centre for Astrophysics (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for New Writing", "label": "Centre for New Writing", "shape": "star", "size": 17, "title": "Centre for New Writing (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Social Change", "label": "Institute for Social Change", "shape": "star", "size": 17, "title": "Institute for Social Change (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Brooks World Poverty Institute", "label": "Brooks World Poverty Institute", "shape": "star", "size": 17, "title": "Brooks World Poverty Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Humanitarian and Conflict Response Institute", "label": "Humanitarian and Conflict Response Institute", "shape": "star", "size": 17, "title": "Humanitarian and Conflict Response Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Manchester Institute for Innovation Research", "label": "Manchester Institute for Innovation Research", "shape": "star", "size": 17, "title": "Manchester Institute for Innovation Research (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Research Institute for Cosmopolitan Cultures", "label": "Research Institute for Cosmopolitan Cultures", "shape": "star", "size": 17, "title": "Research Institute for Cosmopolitan Cultures (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Chinese Studies", "label": "Centre for Chinese Studies", "shape": "star", "size": 17, "title": "Centre for Chinese Studies (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Development Policy and Management", "label": "Institute for Development Policy and Management", "shape": "star", "size": 17, "title": "Institute for Development Policy and Management (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Equity in Education", "label": "Centre for Equity in Education", "shape": "star", "size": 17, "title": "Centre for Equity in Education (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Sustainable Consumption Institute", "label": "Sustainable Consumption Institute", "shape": "star", "size": 17, "title": "Sustainable Consumption Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Manchester Institute of Education", "label": "Manchester Institute of Education", "shape": "star", "size": 17, "title": "Manchester Institute of Education (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "N8 Group", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Manchester", "relation": "Collaborations", "title": "Collaborations", "to": "Universities Research Association", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Manchester", "relation": "Collaborations", "title": "Collaborations", "to": "Manchester Academic Health Science Centre", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Manchester", "relation": "Companies", "title": "Companies", "to": "BP International Centre for Advanced Materials", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Manchester", "relation": "Governments", "title": "Governments", "to": "European Regional Development Fund", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Manchester", "relation": "Governments", "title": "Governments", "to": "Engineering and Physical Sciences Research Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Manchester", "relation": "Governments", "title": "Governments", "to": "Technology Strategy Board", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "National Graphene Institute", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Manchester", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Manchester Metropolitan University", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Manchester", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "UNESCO", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Manchester", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Manchester Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Manchester", "relation": "Student Organizations", "title": "Student Organizations", "to": "Athletic Union", "width": 1}, {"arrows": "to", "color": "#79DCF2", "from": "University of Manchester", "relation": "Non-Governmental Organisations (NGOs)", "title": "Non-Governmental Organisations (NGOs)", "to": "Amnesty International", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "Universities Research Association|URA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Manchester", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "University of Manchester", "relation": "Service Providers", "title": "Service Providers", "to": "Manchester University Press", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Manchester", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Manchester", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Biology, Medicine and Health", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Manchester", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science and Engineering", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Manchester", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Humanities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Biological Sciences, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Medical Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Health Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Chemical Engineering and Analytical Sciences, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "Department of Computer Science, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Electrical and Electronic Engineering, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Mechanical, Aerospace and Civil Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Chemistry, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "Department of Earth and Environmental Sciences, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Physics and Astronomy, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "School of Materials, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "Department of Mathematics, University of Manchester", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "Faculty of Humanities (University of Manchester)", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Manchester", "relation": "School", "title": "School", "to": "Alliance Manchester Business School", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Jodrell Bank Centre for Astrophysics", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for New Writing", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Social Change", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Brooks World Poverty Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Humanitarian and Conflict Response Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Manchester Institute for Innovation Research", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Research Institute for Cosmopolitan Cultures", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Chinese Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Development Policy and Management", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Equity in Education", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Sustainable Consumption Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Manchester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Manchester Institute of Education", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

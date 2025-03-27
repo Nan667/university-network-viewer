@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Leicester", "label": "University of Leicester", "shape": "dot", "size": 103, "title": "University of Leicester (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Warwick", "label": "University of Warwick", "shape": "dot", "size": 17, "title": "University of Warwick (University)", "type": "university"}, {"color": "#C89CD4", "id": "Open University", "label": "Open University", "shape": "dot", "size": 17, "title": "Open University (University)", "type": "university"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "Thomas Fielding Johnson worsted manufacturing business", "label": "Thomas Fielding Johnson worsted manufacturing business", "shape": "triangle", "size": 17, "title": "Thomas Fielding Johnson worsted manufacturing business (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Leicester City Council", "label": "Leicester City Council", "shape": "triangle", "size": 17, "title": "Leicester City Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Science and Technology Facilities Council", "label": "Science and Technology Facilities Council", "shape": "triangle", "size": 17, "title": "Science and Technology Facilities Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "University of Leicester Archaeological Services (ULAS)", "label": "University of Leicester Archaeological Services (ULAS)", "shape": "triangle", "size": 17, "title": "University of Leicester Archaeological Services (ULAS) (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Association of MBAs (AMBA)", "label": "Association of MBAs (AMBA)", "shape": "triangle", "size": 17, "title": "Association of MBAs (AMBA) (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Quality Assurance Agency", "label": "Quality Assurance Agency", "shape": "triangle", "size": 17, "title": "Quality Assurance Agency (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "DiRAC (DiStributed Research utilising Advanced Computing)", "label": "DiRAC (DiStributed Research utilising Advanced Computing)", "shape": "triangle", "size": 17, "title": "DiRAC (DiStributed Research utilising Advanced Computing) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Reuters Top 100 Europe\u2019s Most Innovative Universities", "label": "Reuters Top 100 Europe\u2019s Most Innovative Universities", "shape": "triangle", "size": 17, "title": "Reuters Top 100 Europe\u2019s Most Innovative Universities (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Leicester Precision Medicine Institute", "label": "Leicester Precision Medicine Institute", "shape": "star", "size": 17, "title": "Leicester Precision Medicine Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Leicester Institute of Structural and Chemical Biology", "label": "Leicester Institute of Structural and Chemical Biology", "shape": "star", "size": 17, "title": "Leicester Institute of Structural and Chemical Biology (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Learning Innovation", "label": "Institute of Learning Innovation", "shape": "star", "size": 17, "title": "Institute of Learning Innovation (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "East Midlands Oral History Archive (EMOHA)", "label": "East Midlands Oral History Archive (EMOHA)", "shape": "triangle", "size": 17, "title": "East Midlands Oral History Archive (EMOHA) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Media Archive for Central England", "label": "Media Archive for Central England", "shape": "star", "size": 17, "title": "Media Archive for Central England (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Leicester Student Magazine", "label": "Leicester Student Magazine", "shape": "triangle", "size": 17, "title": "Leicester Student Magazine (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Galaxy Radio", "label": "Galaxy Radio", "shape": "triangle", "size": 17, "title": "Galaxy Radio (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Leicester University Student Television (LUST)", "label": "Leicester University Student Television (LUST)", "shape": "triangle", "size": 17, "title": "Leicester University Student Television (LUST) (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Leicester Students\u0027 Union", "label": "University of Leicester Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of Leicester Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "National Space Centre", "label": "National Space Centre", "shape": "star", "size": 17, "title": "National Space Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs|AMBA", "label": "Association of MBAs|AMBA", "shape": "triangle", "size": 17, "title": "Association of MBAs|AMBA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Midlands Innovation", "label": "Midlands Innovation", "shape": "triangle", "size": 17, "title": "Midlands Innovation (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Sutton Trust#Sutton Trust 30|Sutton 30", "label": "Sutton Trust#Sutton Trust 30|Sutton 30", "shape": "triangle", "size": 17, "title": "Sutton Trust#Sutton Trust 30|Sutton 30 (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#90EE90", "edge_type": "School", "id": "Leicester Medical School", "label": "Leicester Medical School", "shape": "star", "size": 17, "title": "Leicester Medical School (Internal Unit: School)", "type": "internal"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Leicester", "label": "Leicester", "shape": "triangle", "size": 17, "title": "Leicester (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#E6E6FA", "id": "Internal organization/department of the university", "label": "Internal organization/department of the university", "shape": "box", "size": 17, "title": "Internal organization/department of the university (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Biological Sciences", "label": "School of Biological Sciences", "shape": "star", "size": 17, "title": "School of Biological Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Psychology", "label": "School of Psychology", "shape": "star", "size": 17, "title": "School of Psychology (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Allied Health Professions", "label": "School of Allied Health Professions", "shape": "star", "size": 17, "title": "School of Allied Health Professions (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Geography Geology \u0026 the Environment", "label": "School of Geography Geology \u0026 the Environment", "shape": "star", "size": 17, "title": "School of Geography Geology \u0026 the Environment (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Arts", "label": "School of Arts", "shape": "star", "size": 17, "title": "School of Arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Business", "label": "School of Business", "shape": "star", "size": 17, "title": "School of Business (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Media, Communication and Sociology", "label": "School of Media, Communication and Sociology", "shape": "star", "size": 17, "title": "School of Media, Communication and Sociology (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Chemistry", "label": "Chemistry", "shape": "star", "size": 17, "title": "Chemistry (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Informatics", "label": "Informatics", "shape": "star", "size": 17, "title": "Informatics (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Engineering", "label": "Engineering", "shape": "star", "size": 17, "title": "Engineering (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Computing and Mathematical Sciences", "label": "Computing and Mathematical Sciences", "shape": "star", "size": 17, "title": "Computing and Mathematical Sciences (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Physics and Astronomy", "label": "Physics and Astronomy", "shape": "star", "size": 17, "title": "Physics and Astronomy (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Criminology", "label": "Criminology", "shape": "star", "size": 17, "title": "Criminology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Education", "label": "Education", "shape": "star", "size": 17, "title": "Education (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "History, Politics and International Relations", "label": "History, Politics and International Relations", "shape": "star", "size": 17, "title": "History, Politics and International Relations (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Leicester Law School", "label": "Leicester Law School", "shape": "star", "size": 17, "title": "Leicester Law School (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Museum Studies", "label": "Museum Studies", "shape": "star", "size": 17, "title": "Museum Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "American Studies", "label": "American Studies", "shape": "star", "size": 17, "title": "American Studies (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Archaeology and Ancient History", "label": "Archaeology and Ancient History", "shape": "star", "size": 17, "title": "Archaeology and Ancient History (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Leicester Cancer Research Centre", "label": "Leicester Cancer Research Centre", "shape": "star", "size": 17, "title": "Leicester Cancer Research Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Leicester Diabetes Centre", "label": "Leicester Diabetes Centre", "shape": "star", "size": 17, "title": "Leicester Diabetes Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Systems Neuroscience", "label": "Centre for Systems Neuroscience", "shape": "star", "size": 17, "title": "Centre for Systems Neuroscience (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Leicester Drug Discovery and Diagnostics", "label": "Leicester Drug Discovery and Diagnostics", "shape": "star", "size": 17, "title": "Leicester Drug Discovery and Diagnostics (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "University of Leicester Archaeological Services", "label": "University of Leicester Archaeological Services", "shape": "star", "size": 17, "title": "University of Leicester Archaeological Services (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Victorian Studies Centre", "label": "Victorian Studies Centre", "shape": "star", "size": 17, "title": "Victorian Studies Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "East Midlands Oral History Archive", "label": "East Midlands Oral History Archive", "shape": "star", "size": 17, "title": "East Midlands Oral History Archive (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Stanley Burton Centre for Holocaust Studies", "label": "Stanley Burton Centre for Holocaust Studies", "shape": "star", "size": 17, "title": "Stanley Burton Centre for Holocaust Studies (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "University of Leicester Botanic Garden", "label": "University of Leicester Botanic Garden", "shape": "star", "size": 17, "title": "University of Leicester Botanic Garden (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Leicester", "relation": "Collaborations", "title": "Collaborations", "to": "University of Warwick", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Leicester", "relation": "Collaborations", "title": "Collaborations", "to": "Open University", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Leicester", "relation": "Companies", "title": "Companies", "to": "Thomas Fielding Johnson worsted manufacturing business", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Leicester", "relation": "Governments", "title": "Governments", "to": "Leicester City Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Leicester", "relation": "Governments", "title": "Governments", "to": "Science and Technology Facilities Council", "width": 1}, {"arrows": "to", "color": "#9579F2", "from": "University of Leicester", "relation": "Service Providers", "title": "Service Providers", "to": "University of Leicester Archaeological Services (ULAS)", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Leicester", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Association of MBAs (AMBA)", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Leicester", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Quality Assurance Agency", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Leicester", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "DiRAC (DiStributed Research utilising Advanced Computing)", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Leicester", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Reuters Top 100 Europe\u2019s Most Innovative Universities", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Leicester Precision Medicine Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Leicester Institute of Structural and Chemical Biology", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Learning Innovation", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Leicester", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "East Midlands Oral History Archive (EMOHA)", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Media Archive for Central England", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Leicester", "relation": "Student Organizations", "title": "Student Organizations", "to": "Leicester Student Magazine", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Leicester", "relation": "Student Organizations", "title": "Student Organizations", "to": "Galaxy Radio", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Leicester", "relation": "Student Organizations", "title": "Student Organizations", "to": "Leicester University Student Television (LUST)", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Leicester", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Leicester Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "National Space Centre", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs|AMBA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "Midlands Innovation", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "Sutton Trust#Sutton Trust 30|Sutton 30", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Leicester", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "Leicester Medical School", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Leicester", "relation": "Collaborations", "title": "Collaborations", "to": "Leicester", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Internal organization/department of the university", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Leicester", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Biological Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Psychology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Allied Health Professions", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Geography Geology \u0026 the Environment", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Business", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Leicester", "relation": "School", "title": "School", "to": "School of Media, Communication and Sociology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Chemistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Informatics", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Computing and Mathematical Sciences", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Physics and Astronomy", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Criminology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Education", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "History, Politics and International Relations", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Leicester Law School", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Museum Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "American Studies", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Leicester", "relation": "Department", "title": "Department", "to": "Archaeology and Ancient History", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Leicester Cancer Research Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Leicester Diabetes Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Systems Neuroscience", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Leicester Drug Discovery and Diagnostics", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "University of Leicester Archaeological Services", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Victorian Studies Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "East Midlands Oral History Archive", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Stanley Burton Centre for Holocaust Studies", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Leicester", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "University of Leicester Botanic Garden", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Westminster", "label": "University of Westminster", "shape": "dot", "size": 97, "title": "University of Westminster (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities", "label": "Association of Commonwealth Universities", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of MBAs", "label": "Association of MBAs", "shape": "triangle", "size": 17, "title": "Association of MBAs (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Non governmental/non-profit organizations", "color": "#C0C0C0", "id": "European Foundation for Management Development", "label": "European Foundation for Management Development", "shape": "triangle", "size": 17, "title": "European Foundation for Management Development (External Entity: Non governmental/non-profit organizations)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "European Quality Improvement System", "label": "European Quality Improvement System", "shape": "triangle", "size": 17, "title": "European Quality Improvement System (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association", "label": "European University Association", "shape": "triangle", "size": 17, "title": "European University Association (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Government of Uzbekistan", "label": "Government of Uzbekistan", "shape": "triangle", "size": 17, "title": "Government of Uzbekistan (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Policy Studies Institute", "label": "Policy Studies Institute", "shape": "star", "size": 17, "title": "Policy Studies Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Westminster Students\u0027 Union", "label": "University of Westminster Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of Westminster Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Smoke Radio", "label": "Smoke Radio", "shape": "triangle", "size": 17, "title": "Smoke Radio (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Smoke TV", "label": "Smoke TV", "shape": "triangle", "size": 17, "title": "Smoke TV (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Westminster International University in Tashkent", "label": "Westminster International University in Tashkent", "shape": "triangle", "size": 17, "title": "Westminster International University in Tashkent (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Computer Society", "label": "British Computer Society", "shape": "triangle", "size": 17, "title": "British Computer Society (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "British Psychological Society", "label": "British Psychological Society", "shape": "triangle", "size": 17, "title": "British Psychological Society (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Chartered Institute of Building", "label": "Chartered Institute of Building", "shape": "triangle", "size": 17, "title": "Chartered Institute of Building (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Chartered Association of Building Engineers", "label": "Chartered Association of Building Engineers", "shape": "triangle", "size": 17, "title": "Chartered Association of Building Engineers (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Institution of Civil Engineers", "label": "Institution of Civil Engineers", "shape": "triangle", "size": 17, "title": "Institution of Civil Engineers (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Royal Institution of Chartered Surveyors", "label": "Royal Institution of Chartered Surveyors", "shape": "triangle", "size": 17, "title": "Royal Institution of Chartered Surveyors (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Health Professions Council", "label": "Health Professions Council", "shape": "triangle", "size": 17, "title": "Health Professions Council (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Compostela Group of Universities", "label": "Compostela Group of Universities", "shape": "triangle", "size": 17, "title": "Compostela Group of Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "EQUIS", "label": "EQUIS", "shape": "triangle", "size": 17, "title": "EQUIS (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "SGroup European Universities\u0027 Network", "label": "SGroup European Universities\u0027 Network", "shape": "triangle", "size": 17, "title": "SGroup European Universities\u0027 Network (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "International Association of Universities", "label": "International Association of Universities", "shape": "triangle", "size": 17, "title": "International Association of Universities (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Quintin Boat Club", "label": "Quintin Boat Club", "shape": "triangle", "size": 17, "title": "Quintin Boat Club (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#C0C0C0", "id": "Non governmental/non-profit organizations", "label": "Non governmental/non-profit organizations", "shape": "box", "size": 17, "title": "Non governmental/non-profit organizations (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Architecture and Cities", "label": "School of Architecture and Cities", "shape": "star", "size": 17, "title": "School of Architecture and Cities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computer Science and Engineering", "label": "School of Computer Science and Engineering", "shape": "star", "size": 17, "title": "School of Computer Science and Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Westminster School of Arts", "label": "Westminster School of Arts", "shape": "star", "size": 17, "title": "Westminster School of Arts (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Westminster School of Media and Communications", "label": "Westminster School of Media and Communications", "shape": "star", "size": 17, "title": "Westminster School of Media and Communications (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Humanities", "label": "School of Humanities", "shape": "star", "size": 17, "title": "School of Humanities (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Life Sciences", "label": "School of Life Sciences", "shape": "star", "size": 17, "title": "School of Life Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Social Sciences", "label": "School of Social Sciences", "shape": "star", "size": 17, "title": "School of Social Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "Westminster Law School", "label": "Westminster Law School", "shape": "star", "size": 17, "title": "Westminster Law School (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Applied Management", "label": "School of Applied Management", "shape": "star", "size": 17, "title": "School of Applied Management (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Finance and Accounting", "label": "School of Finance and Accounting", "shape": "star", "size": 17, "title": "School of Finance and Accounting (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Management and Marketing", "label": "School of Management and Marketing", "shape": "star", "size": 17, "title": "School of Management and Marketing (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Organisations, Economy and Society", "label": "School of Organisations, Economy and Society", "shape": "star", "size": 17, "title": "School of Organisations, Economy and Society (Internal Unit: School)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Communication and Media Research Institute", "label": "Communication and Media Research Institute", "shape": "star", "size": 17, "title": "Communication and Media Research Institute (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for the Study of Democracy", "label": "Centre for the Study of Democracy", "shape": "star", "size": 17, "title": "Centre for the Study of Democracy (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "China Media Centre", "label": "China Media Centre", "shape": "star", "size": 17, "title": "China Media Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Africa Media Centre", "label": "Africa Media Centre", "shape": "star", "size": 17, "title": "Africa Media Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Arab Media Centre", "label": "Arab Media Centre", "shape": "star", "size": 17, "title": "Arab Media Centre (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute for Modern and Contemporary Culture", "label": "Institute for Modern and Contemporary Culture", "shape": "star", "size": 17, "title": "Institute for Modern and Contemporary Culture (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "Association of MBAs", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Westminster", "relation": "Collaborations", "title": "Collaborations", "to": "European Foundation for Management Development", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Westminster", "relation": "Collaborations", "title": "Collaborations", "to": "European Quality Improvement System", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Westminster", "relation": "Governments", "title": "Governments", "to": "Government of Uzbekistan", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Policy Studies Institute", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Westminster", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Westminster Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Westminster", "relation": "Student Organizations", "title": "Student Organizations", "to": "Smoke Radio", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Westminster", "relation": "Student Organizations", "title": "Student Organizations", "to": "Smoke TV", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Westminster", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Westminster International University in Tashkent", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Computer Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "British Psychological Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Chartered Institute of Building", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Chartered Association of Building Engineers", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Institution of Civil Engineers", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Royal Institution of Chartered Surveyors", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Westminster", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Health Professions Council", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "Compostela Group of Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "EQUIS", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "SGroup European Universities\u0027 Network", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "International Association of Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Westminster", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Westminster", "relation": "Student Organizations", "title": "Student Organizations", "to": "Quintin Boat Club", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Non governmental/non-profit organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Westminster", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Architecture and Cities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Computer Science and Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "Westminster School of Arts", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "Westminster School of Media and Communications", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Humanities", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Life Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Social Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "Westminster Law School", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Applied Management", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Finance and Accounting", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Management and Marketing", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Westminster", "relation": "School", "title": "School", "to": "School of Organisations, Economy and Society", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Communication and Media Research Institute", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for the Study of Democracy", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "China Media Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Africa Media Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Arab Media Centre", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Westminster", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute for Modern and Contemporary Culture", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Portsmouth", "label": "University of Portsmouth", "shape": "dot", "size": 98, "title": "University of Portsmouth (University)", "type": "university"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Military Technological College of Oman", "label": "Military Technological College of Oman", "shape": "triangle", "size": 17, "title": "Military Technological College of Oman (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "CRUNCH: Climate Resilient Urban Nexus Choices", "label": "CRUNCH: Climate Resilient Urban Nexus Choices", "shape": "triangle", "size": 17, "title": "CRUNCH: Climate Resilient Urban Nexus Choices (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Hampshire County Council", "label": "Hampshire County Council", "shape": "triangle", "size": 17, "title": "Hampshire County Council (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Borough of Portsmouth", "label": "Borough of Portsmouth", "shape": "triangle", "size": 17, "title": "Borough of Portsmouth (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Sultanate of Oman", "label": "Sultanate of Oman", "shape": "triangle", "size": 17, "title": "Sultanate of Oman (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Horizon 2020", "label": "Horizon 2020", "shape": "triangle", "size": 17, "title": "Horizon 2020 (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Belmont Forum", "label": "Belmont Forum", "shape": "triangle", "size": 17, "title": "Belmont Forum (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Economic and Social Research Council (ESRC)", "label": "Economic and Social Research Council (ESRC)", "shape": "triangle", "size": 17, "title": "Economic and Social Research Council (ESRC) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Portsmouth Guildhall", "label": "Portsmouth Guildhall", "shape": "triangle", "size": 17, "title": "Portsmouth Guildhall (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Langstone Campus", "label": "Langstone Campus", "shape": "triangle", "size": 17, "title": "Langstone Campus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University of Portsmouth Students\u0027 Union", "label": "University of Portsmouth Students\u0027 Union", "shape": "triangle", "size": 17, "title": "University of Portsmouth Students\u0027 Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Amnesty International Society", "label": "Amnesty International Society", "shape": "triangle", "size": 17, "title": "Amnesty International Society (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Teaching Excellence Framework", "label": "Teaching Excellence Framework", "shape": "triangle", "size": 17, "title": "Teaching Excellence Framework (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Business and Law", "label": "Faculty of Business and Law", "shape": "star", "size": 17, "title": "Faculty of Business and Law (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Creative and Cultural Industries", "label": "Faculty of Creative and Cultural Industries", "shape": "star", "size": 17, "title": "Faculty of Creative and Cultural Industries (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Humanities and Social Sciences", "label": "Faculty of Humanities and Social Sciences", "shape": "star", "size": 17, "title": "Faculty of Humanities and Social Sciences (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Science and Health", "label": "Faculty of Science and Health", "shape": "star", "size": 17, "title": "Faculty of Science and Health (Internal Unit: Faculty)", "type": "internal"}, {"color": "#87CEFA", "edge_type": "Faculty", "id": "Faculty of Technology", "label": "Faculty of Technology", "shape": "star", "size": 17, "title": "Faculty of Technology (Internal Unit: Faculty)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Accounting, Economics and Finance", "label": "School of Accounting, Economics and Finance", "shape": "star", "size": 17, "title": "School of Accounting, Economics and Finance (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Law", "label": "School of Law", "shape": "star", "size": 17, "title": "School of Law (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Organisations, Systems and People", "label": "School of Organisations, Systems and People", "shape": "star", "size": 17, "title": "School of Organisations, Systems and People (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Strategy, Marketing and Innovation", "label": "School of Strategy, Marketing and Innovation", "shape": "star", "size": 17, "title": "School of Strategy, Marketing and Innovation (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Architecture", "label": "School of Architecture", "shape": "star", "size": 17, "title": "School of Architecture (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Art, Design and Performance", "label": "School of Art, Design and Performance", "shape": "star", "size": 17, "title": "School of Art, Design and Performance (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Creative Technologies", "label": "School of Creative Technologies", "shape": "star", "size": 17, "title": "School of Creative Technologies (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Film, Media and Communication", "label": "School of Film, Media and Communication", "shape": "star", "size": 17, "title": "School of Film, Media and Communication (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Criminology and Criminal Justice", "label": "School of Criminology and Criminal Justice", "shape": "star", "size": 17, "title": "School of Criminology and Criminal Justice (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Area Studies, Sociology, History, Politics and Literature", "label": "School of Area Studies, Sociology, History, Politics and Literature", "shape": "star", "size": 17, "title": "School of Area Studies, Sociology, History, Politics and Literature (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Education, Languages and Linguistics", "label": "School of Education, Languages and Linguistics", "shape": "star", "size": 17, "title": "School of Education, Languages and Linguistics (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Biological Sciences", "label": "School of Biological Sciences", "shape": "star", "size": 17, "title": "School of Biological Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of the Environment, Geography and Geosciences", "label": "School of the Environment, Geography and Geosciences", "shape": "star", "size": 17, "title": "School of the Environment, Geography and Geosciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Health and Care Professions", "label": "School of Health and Care Professions", "shape": "star", "size": 17, "title": "School of Health and Care Professions (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Pharmacy and Biomedical Sciences", "label": "School of Pharmacy and Biomedical Sciences", "shape": "star", "size": 17, "title": "School of Pharmacy and Biomedical Sciences (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Sport, Health and Exercise Science", "label": "School of Sport, Health and Exercise Science", "shape": "star", "size": 17, "title": "School of Sport, Health and Exercise Science (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Civil Engineering and Surveying", "label": "School of Civil Engineering and Surveying", "shape": "star", "size": 17, "title": "School of Civil Engineering and Surveying (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Computing", "label": "School of Computing", "shape": "star", "size": 17, "title": "School of Computing (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Energy and Electronic Engineering", "label": "School of Energy and Electronic Engineering", "shape": "star", "size": 17, "title": "School of Energy and Electronic Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Mathematics and Physics", "label": "School of Mathematics and Physics", "shape": "star", "size": 17, "title": "School of Mathematics and Physics (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Mechanical and Design Engineering", "label": "School of Mechanical and Design Engineering", "shape": "star", "size": 17, "title": "School of Mechanical and Design Engineering (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Psychology", "label": "Department of Psychology", "shape": "star", "size": 17, "title": "Department of Psychology (Internal Unit: Department)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Learning at Work", "label": "Department of Learning at Work", "shape": "star", "size": 17, "title": "Department of Learning at Work (Internal Unit: Department)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Dental Academy", "label": "Dental Academy", "shape": "star", "size": 17, "title": "Dental Academy (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Medical School", "label": "Medical School", "shape": "star", "size": 17, "title": "Medical School (Internal Unit: Centre / Institute)", "type": "internal"}, {"color": "#FFB347", "edge_type": "Centre / Institute", "id": "Institute of Cosmology and Gravitation", "label": "Institute of Cosmology and Gravitation", "shape": "star", "size": 17, "title": "Institute of Cosmology and Gravitation (Internal Unit: Centre / Institute)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Portsmouth", "relation": "Collaborations", "title": "Collaborations", "to": "Military Technological College of Oman", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Portsmouth", "relation": "Collaborations", "title": "Collaborations", "to": "CRUNCH: Climate Resilient Urban Nexus Choices", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Portsmouth", "relation": "Governments", "title": "Governments", "to": "Hampshire County Council", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Portsmouth", "relation": "Governments", "title": "Governments", "to": "Borough of Portsmouth", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Portsmouth", "relation": "Governments", "title": "Governments", "to": "Sultanate of Oman", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Portsmouth", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Horizon 2020", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Portsmouth", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Belmont Forum", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Portsmouth", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Economic and Social Research Council (ESRC)", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Portsmouth", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Portsmouth Guildhall", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Portsmouth", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "Langstone Campus", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Portsmouth", "relation": "Student Organizations", "title": "Student Organizations", "to": "University of Portsmouth Students\u0027 Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Portsmouth", "relation": "Student Organizations", "title": "Student Organizations", "to": "Amnesty International Society", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Portsmouth", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Teaching Excellence Framework", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Portsmouth", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Portsmouth", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Portsmouth", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Business and Law", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Portsmouth", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Creative and Cultural Industries", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Portsmouth", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Humanities and Social Sciences", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Portsmouth", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Science and Health", "width": 1}, {"arrows": "to", "color": "#87CEFA", "from": "University of Portsmouth", "relation": "Faculty", "title": "Faculty", "to": "Faculty of Technology", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Accounting, Economics and Finance", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Law", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Organisations, Systems and People", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Strategy, Marketing and Innovation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Architecture", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Art, Design and Performance", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Creative Technologies", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Film, Media and Communication", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Criminology and Criminal Justice", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Area Studies, Sociology, History, Politics and Literature", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Education, Languages and Linguistics", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Biological Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of the Environment, Geography and Geosciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Health and Care Professions", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Pharmacy and Biomedical Sciences", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Sport, Health and Exercise Science", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Civil Engineering and Surveying", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Computing", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Energy and Electronic Engineering", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Mathematics and Physics", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Portsmouth", "relation": "School", "title": "School", "to": "School of Mechanical and Design Engineering", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Portsmouth", "relation": "Department", "title": "Department", "to": "Department of Psychology", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Portsmouth", "relation": "Department", "title": "Department", "to": "Department of Learning at Work", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Portsmouth", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Dental Academy", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Portsmouth", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Medical School", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Portsmouth", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Institute of Cosmology and Gravitation", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

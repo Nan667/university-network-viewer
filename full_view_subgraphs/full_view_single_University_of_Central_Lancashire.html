@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Central Lancashire", "label": "University of Central Lancashire", "shape": "dot", "size": 93, "title": "University of Central Lancashire (University)", "type": "university"}, {"category": "Governments", "color": "#FFA07A", "id": "NASA", "label": "NASA", "shape": "triangle", "size": 17, "title": "NASA (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Department of Health", "label": "Department of Health", "shape": "triangle", "size": 17, "title": "Department of Health (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Football Association", "label": "Football Association", "shape": "triangle", "size": 17, "title": "Football Association (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Professional Golfers Association", "label": "Professional Golfers Association", "shape": "triangle", "size": 17, "title": "Professional Golfers Association (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Others", "color": "#DA70D6", "id": "International Olympic Committee", "label": "International Olympic Committee", "shape": "triangle", "size": 17, "title": "International Olympic Committee (External Entity: Others)", "type": "external_entity"}, {"category": "Educational and Research Enterprises", "color": "#B0C4DE", "id": "BAE Systems", "label": "BAE Systems", "shape": "triangle", "size": 17, "title": "BAE Systems (External Entity: Educational and Research Enterprises)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Chinese Ministry of Education", "label": "Chinese Ministry of Education", "shape": "triangle", "size": 17, "title": "Chinese Ministry of Education (External Entity: Governments)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "UCLan Cyprus", "label": "UCLan Cyprus", "shape": "triangle", "size": 17, "title": "UCLan Cyprus (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Shenzhen Virtual University Park", "label": "Shenzhen Virtual University Park", "shape": "triangle", "size": 17, "title": "Shenzhen Virtual University Park (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "University Technical College Wigan", "label": "University Technical College Wigan", "shape": "triangle", "size": 17, "title": "University Technical College Wigan (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "British Universities and Colleges Sport", "label": "British Universities and Colleges Sport", "shape": "triangle", "size": 17, "title": "British Universities and Colleges Sport (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#FFB347", "edge_type": "Centre / Institute", "id": "Centre for Collaborative Learning", "label": "Centre for Collaborative Learning", "shape": "star", "size": 17, "title": "Centre for Collaborative Learning (Internal Unit: Centre / Institute)", "type": "internal"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Arts and Media", "label": "Arts and Media", "shape": "triangle", "size": 17, "title": "Arts and Media (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Business", "label": "Business", "shape": "triangle", "size": 17, "title": "Business (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Community Health and Midwifery", "label": "Community Health and Midwifery", "shape": "triangle", "size": 17, "title": "Community Health and Midwifery (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Dentistry", "label": "Dentistry", "shape": "triangle", "size": 17, "title": "Dentistry (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Engineering", "label": "Engineering", "shape": "triangle", "size": 17, "title": "Engineering (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Humanities, Language and Global Studies", "label": "Humanities, Language and Global Studies", "shape": "triangle", "size": 17, "title": "Humanities, Language and Global Studies (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Justice", "label": "Justice", "shape": "triangle", "size": 17, "title": "Justice (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Management", "label": "Management", "shape": "triangle", "size": 17, "title": "Management (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Medicine", "label": "Medicine", "shape": "triangle", "size": 17, "title": "Medicine (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Natural Sciences", "label": "Natural Sciences", "shape": "triangle", "size": 17, "title": "Natural Sciences (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Nursing", "label": "Nursing", "shape": "triangle", "size": 17, "title": "Nursing (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Pharmacy and Biomedical Sciences", "label": "Pharmacy and Biomedical Sciences", "shape": "triangle", "size": 17, "title": "Pharmacy and Biomedical Sciences (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Psychology and Computing", "label": "Psychology and Computing", "shape": "triangle", "size": 17, "title": "Psychology and Computing (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Social Work, Care and Community", "label": "Social Work, Care and Community", "shape": "triangle", "size": 17, "title": "Social Work, Care and Community (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Sport and Health Sciences", "label": "Sport and Health Sciences", "shape": "triangle", "size": 17, "title": "Sport and Health Sciences (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Myerscough College", "label": "Myerscough College", "shape": "triangle", "size": 17, "title": "Myerscough College (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Internal organization/department of the university", "color": "#E6E6FA", "id": "Veterinary Medicine", "label": "Veterinary Medicine", "shape": "triangle", "size": 17, "title": "Veterinary Medicine (External Entity: Internal organization/department of the university)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "MillionPlus", "label": "MillionPlus", "shape": "triangle", "size": 17, "title": "MillionPlus (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#DA70D6", "id": "Others", "label": "Others", "shape": "box", "size": 17, "title": "Others (Category)", "type": "category"}, {"color": "#B0C4DE", "id": "Educational and Research Enterprises", "label": "Educational and Research Enterprises", "shape": "box", "size": 17, "title": "Educational and Research Enterprises (Category)", "type": "category"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#E6E6FA", "id": "Internal organization/department of the university", "label": "Internal organization/department of the university", "shape": "box", "size": 17, "title": "Internal organization/department of the university (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Journalism and Media", "label": "School of Journalism and Media", "shape": "star", "size": 17, "title": "School of Journalism and Media (Internal Unit: School)", "type": "internal"}, {"color": "#90EE90", "edge_type": "School", "id": "School of Medicine and Dentistry", "label": "School of Medicine and Dentistry", "shape": "star", "size": 17, "title": "School of Medicine and Dentistry (Internal Unit: School)", "type": "internal"}, {"color": "#FF9999", "edge_type": "Department", "id": "Department of Politics and European Studies", "label": "Department of Politics and European Studies", "shape": "star", "size": 17, "title": "Department of Politics and European Studies (Internal Unit: Department)", "type": "internal"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Central Lancashire", "relation": "Collaborations", "title": "Collaborations", "to": "NASA", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Central Lancashire", "relation": "Collaborations", "title": "Collaborations", "to": "Department of Health", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Central Lancashire", "relation": "Collaborations", "title": "Collaborations", "to": "Football Association", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Central Lancashire", "relation": "Collaborations", "title": "Collaborations", "to": "Professional Golfers Association", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Central Lancashire", "relation": "Collaborations", "title": "Collaborations", "to": "International Olympic Committee", "width": 1}, {"arrows": "to", "color": "#EBF279", "from": "University of Central Lancashire", "relation": "Companies", "title": "Companies", "to": "BAE Systems", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Central Lancashire", "relation": "Governments", "title": "Governments", "to": "Chinese Ministry of Education", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Central Lancashire", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "UCLan Cyprus", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Central Lancashire", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Shenzhen Virtual University Park", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Central Lancashire", "relation": "Student Organizations", "title": "Student Organizations", "to": "University Technical College Wigan", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Central Lancashire", "relation": "Student Organizations", "title": "Student Organizations", "to": "British Universities and Colleges Sport", "width": 1}, {"arrows": "to", "color": "#FFB347", "from": "University of Central Lancashire", "relation": "Centre / Institute", "title": "Centre / Institute", "to": "Centre for Collaborative Learning", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Arts and Media", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Business", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Community Health and Midwifery", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Dentistry", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Engineering", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Humanities, Language and Global Studies", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Justice", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Management", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Medicine", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Natural Sciences", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Nursing", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Pharmacy and Biomedical Sciences", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Psychology and Computing", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Social Work, Care and Community", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Sport and Health Sciences", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Myerscough College", "width": 1}, {"arrows": "to", "color": "#79B2F2", "from": "University of Central Lancashire", "relation": "Organizational Divisions", "title": "Organizational Divisions", "to": "Veterinary Medicine", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Central Lancashire", "relation": "Affiliations", "title": "Affiliations", "to": "MillionPlus", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Central Lancashire", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Others", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Educational and Research Enterprises", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Internal organization/department of the university", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Central Lancashire", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Central Lancashire", "relation": "School", "title": "School", "to": "School of Journalism and Media", "width": 1}, {"arrows": "to", "color": "#90EE90", "from": "University of Central Lancashire", "relation": "School", "title": "School", "to": "School of Medicine and Dentistry", "width": 1}, {"arrows": "to", "color": "#FF9999", "from": "University of Central Lancashire", "relation": "Department", "title": "Department", "to": "Department of Politics and European Studies", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#C89CD4", "id": "University of Oxford", "label": "University of Oxford", "shape": "dot", "size": 89, "title": "University of Oxford (University)", "type": "university"}, {"color": "#C89CD4", "id": "University of Cambridge", "label": "University of Cambridge", "shape": "dot", "size": 17, "title": "University of Cambridge (University)", "type": "university"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Russell Group", "label": "Russell Group", "shape": "triangle", "size": 17, "title": "Russell Group (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "G5", "label": "G5", "shape": "triangle", "size": 17, "title": "G5 (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "League of European Research Universities", "label": "League of European Research Universities", "shape": "triangle", "size": 17, "title": "League of European Research Universities (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "International Alliance of Research Universities", "label": "International Alliance of Research Universities", "shape": "triangle", "size": 17, "title": "International Alliance of Research Universities (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Europaeum", "label": "Europaeum", "shape": "triangle", "size": 17, "title": "Europaeum (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "Henry II of England", "label": "Henry II of England", "shape": "triangle", "size": 17, "title": "Henry II of England (External Entity: Governments)", "type": "external_entity"}, {"category": "Governments", "color": "#FFA07A", "id": "King Henry III of England", "label": "King Henry III of England", "shape": "triangle", "size": 17, "title": "King Henry III of England (External Entity: Governments)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford University Student Union", "label": "Oxford University Student Union", "shape": "triangle", "size": 17, "title": "Oxford University Student Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford Union", "label": "Oxford Union", "shape": "triangle", "size": 17, "title": "Oxford Union (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford University Conservative Association", "label": "Oxford University Conservative Association", "shape": "triangle", "size": 17, "title": "Oxford University Conservative Association (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford University Labour Club", "label": "Oxford University Labour Club", "shape": "triangle", "size": 17, "title": "Oxford University Labour Club (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford University Dramatic Society", "label": "Oxford University Dramatic Society", "shape": "triangle", "size": 17, "title": "Oxford University Dramatic Society (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxford Revue", "label": "Oxford Revue", "shape": "triangle", "size": 17, "title": "Oxford Revue (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "The Oxford Blue", "label": "The Oxford Blue", "shape": "triangle", "size": 17, "title": "The Oxford Blue (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Students and Sports Organizations", "color": "#FF9999", "id": "Oxide Radio", "label": "Oxide Radio", "shape": "triangle", "size": 17, "title": "Oxide Radio (External Entity: Students and Sports Organizations)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "University of Cambridge (historically linked through Oxbridge)", "label": "University of Cambridge (historically linked through Oxbridge)", "shape": "triangle", "size": 17, "title": "University of Cambridge (historically linked through Oxbridge) (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "University of Oxford Endowment Management", "label": "University of Oxford Endowment Management", "shape": "triangle", "size": 17, "title": "University of Oxford Endowment Management (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Accrediting Bodies", "color": "#90EE90", "id": "Campaign for Oxford", "label": "Campaign for Oxford", "shape": "triangle", "size": 17, "title": "Campaign for Oxford (External Entity: Accrediting Bodies)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Royal Society", "label": "Royal Society", "shape": "triangle", "size": 17, "title": "Royal Society (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Oxford Martin School", "label": "Oxford Martin School", "shape": "triangle", "size": 17, "title": "Oxford Martin School (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Oxford Philosophical Club", "label": "Oxford Philosophical Club", "shape": "triangle", "size": 17, "title": "Oxford Philosophical Club (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Oxford University Endowment Management", "label": "Oxford University Endowment Management", "shape": "triangle", "size": 17, "title": "Oxford University Endowment Management (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Higher Education and Research Institutions", "color": "#DDA0DD", "id": "Clarendon Scholarship", "label": "Clarendon Scholarship", "shape": "triangle", "size": 17, "title": "Clarendon Scholarship (External Entity: Higher Education and Research Institutions)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Association of Commonwealth Universities|ACU", "label": "Association of Commonwealth Universities|ACU", "shape": "triangle", "size": 17, "title": "Association of Commonwealth Universities|ACU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "European University Association|EUA", "label": "European University Association|EUA", "shape": "triangle", "size": 17, "title": "European University Association|EUA (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "International Alliance of Research Universities|IARU", "label": "International Alliance of Research Universities|IARU", "shape": "triangle", "size": 17, "title": "International Alliance of Research Universities|IARU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "LERU", "label": "LERU", "shape": "triangle", "size": 17, "title": "LERU (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "SES (universities)|SES", "label": "SES (universities)|SES", "shape": "triangle", "size": 17, "title": "SES (universities)|SES (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"category": "Academic alliance/academic affiliation", "color": "#66CDAA", "id": "Universities UK", "label": "Universities UK", "shape": "triangle", "size": 17, "title": "Universities UK (External Entity: Academic alliance/academic affiliation)", "type": "external_entity"}, {"color": "#DDA0DD", "id": "Higher Education and Research Institutions", "label": "Higher Education and Research Institutions", "shape": "box", "size": 17, "title": "Higher Education and Research Institutions (Category)", "type": "category"}, {"color": "#66CDAA", "id": "Academic alliance/academic affiliation", "label": "Academic alliance/academic affiliation", "shape": "box", "size": 17, "title": "Academic alliance/academic affiliation (Category)", "type": "category"}, {"color": "#FFA07A", "id": "Governments", "label": "Governments", "shape": "box", "size": 17, "title": "Governments (Category)", "type": "category"}, {"color": "#FF9999", "id": "Students and Sports Organizations", "label": "Students and Sports Organizations", "shape": "box", "size": 17, "title": "Students and Sports Organizations (Category)", "type": "category"}, {"color": "#90EE90", "id": "Accrediting Bodies", "label": "Accrediting Bodies", "shape": "box", "size": 17, "title": "Accrediting Bodies (Category)", "type": "category"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#F2CE79", "from": "University of Oxford", "relation": "Collaborations", "title": "Collaborations", "to": "University of Cambridge", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "Russell Group", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Oxford", "relation": "Collaborations", "title": "Collaborations", "to": "G5", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Oxford", "relation": "Collaborations", "title": "Collaborations", "to": "League of European Research Universities", "width": 1}, {"arrows": "to", "color": "#F2CE79", "from": "University of Oxford", "relation": "Collaborations", "title": "Collaborations", "to": "International Alliance of Research Universities", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "Europaeum", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Oxford", "relation": "Governments", "title": "Governments", "to": "Henry II of England", "width": 1}, {"arrows": "to", "color": "#95F279", "from": "University of Oxford", "relation": "Governments", "title": "Governments", "to": "King Henry III of England", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford University Student Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford Union", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford University Conservative Association", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford University Labour Club", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford University Dramatic Society", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxford Revue", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "The Oxford Blue", "width": 1}, {"arrows": "to", "color": "#F279CE", "from": "University of Oxford", "relation": "Student Organizations", "title": "Student Organizations", "to": "Oxide Radio", "width": 1}, {"arrows": "to", "color": "#C079F2", "from": "University of Oxford", "relation": "Shared Campuses", "title": "Shared Campuses", "to": "University of Cambridge (historically linked through Oxbridge)", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Oxford", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "University of Oxford Endowment Management", "width": 1}, {"arrows": "to", "color": "#F27979", "from": "University of Oxford", "relation": "Accrediting Bodies", "title": "Accrediting Bodies", "to": "Campaign for Oxford", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Oxford", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Royal Society", "width": 1}, {"arrows": "to", "color": "#C0F279", "from": "University of Oxford", "relation": "External Research Organisations", "title": "External Research Organisations", "to": "Oxford Martin School", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Oxford", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Oxford Philosophical Club", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Oxford", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Oxford University Endowment Management", "width": 1}, {"arrows": "to", "color": "#79F2B2", "from": "University of Oxford", "relation": "Internal Research Organisations", "title": "Internal Research Organisations", "to": "Clarendon Scholarship", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "Association of Commonwealth Universities|ACU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "European University Association|EUA", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "International Alliance of Research Universities|IARU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "LERU", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "SES (universities)|SES", "width": 1}, {"arrows": "to", "color": "#F2A379", "from": "University of Oxford", "relation": "Affiliations", "title": "Affiliations", "to": "Universities UK", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Oxford", "relation": "category_link", "title": "category_link", "to": "Higher Education and Research Institutions", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Oxford", "relation": "category_link", "title": "category_link", "to": "Academic alliance/academic affiliation", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Oxford", "relation": "category_link", "title": "category_link", "to": "Governments", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Oxford", "relation": "category_link", "title": "category_link", "to": "Students and Sports Organizations", "width": 1}, {"arrows": "to", "color": "#AAAAAA", "from": "University of Oxford", "relation": "category_link", "title": "category_link", "to": "Accrediting Bodies", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <div style='position: absolute; right: 20px; top: 20px; background-color: white; border: 1px solid gray; padding: 10px; font-size: 14px; z-index:999;'>
+    <b>Legend</b><br><br>
+    <span style='color:#C89CD4;'>●</span> University (dot)<br>
+    <span style='color:#FFD700;'>▲</span> External Entity (triangle)<br>
+    <span style='color:#FFD700;'>□</span> Category (box)<br>
+    <span style='color:#999999;'>✩</span> Internal Unit (star)<br><br>
+    <b>Edge Colors</b><br>
+    <span style='color:#F27979;'>—</span> Accrediting Bodies<br><span style='color:#F2A379;'>—</span> Affiliations<br><span style='color:#F2CE79;'>—</span> Collaborations<br><span style='color:#EBF279;'>—</span> Companies<br><span style='color:#C0F279;'>—</span> External Research Organisations<br><span style='color:#95F279;'>—</span> Governments<br><span style='color:#79F287;'>—</span> IT Service Providers<br><span style='color:#79F2B2;'>—</span> Internal Research Organisations<br><span style='color:#79F2DC;'>—</span> International Classifications of Nonprofit Organizations<br><span style='color:#79DCF2;'>—</span> Non-Governmental Organisations (NGOs)<br><span style='color:#79B2F2;'>—</span> Organizational Divisions<br><span style='color:#7987F2;'>—</span> Parent Organizations<br><span style='color:#9579F2;'>—</span> Service Providers<br><span style='color:#C079F2;'>—</span> Shared Campuses<br><span style='color:#EB79F2;'>—</span> Spin-offs<br><span style='color:#F279CE;'>—</span> Student Organizations<br><span style='color:#F279A3;'>—</span> Subsidiaries<br><span style='color:#FFB347;'>—</span> Centre / Institute<br><span style='color:#87CEFA;'>—</span> Faculty<br><span style='color:#90EE90;'>—</span> School<br><span style='color:#FF9999;'>—</span> Department<br></div></body>
+</html>
